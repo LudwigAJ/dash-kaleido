@@ -90,15 +90,23 @@ function ContextMenuSubContent({
   );
 }
 
-function ContextMenuContent({
-  className,
-  ...props
-}: React.ComponentProps<typeof ContextMenuPrimitive.Content>) {
+interface ContextMenuContentProps extends React.ComponentProps<
+  typeof ContextMenuPrimitive.Content
+> {
+  /** Theme to apply - needed for portal rendering outside main container */
+  theme?: 'light' | 'dark';
+}
+
+function ContextMenuContent({ className, theme = 'light', ...props }: ContextMenuContentProps) {
+  const themeClass = theme === 'dark' ? 'kaleido-theme-dark' : 'kaleido-theme-light';
+
   return (
     <ContextMenuPrimitive.Portal>
       <ContextMenuPrimitive.Content
         data-slot="context-menu-content"
         className={cn(
+          // Theme class for CSS variables
+          themeClass,
           // Base styles
           'z-50 min-w-[8rem] overflow-hidden overflow-y-auto rounded-md border border-border bg-popover p-1 text-popover-foreground shadow-md',
           // Animations

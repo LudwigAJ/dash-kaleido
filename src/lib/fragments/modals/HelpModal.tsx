@@ -8,6 +8,9 @@ import {
   DialogFooter,
   Button,
 } from '@/components/ui';
+import { cn } from '@/utils/cn';
+import { VERSION } from '../../version';
+import { useKaleido } from '../KaleidoManager/context';
 
 export interface HelpModalProps {
   /** Whether the modal is open */
@@ -24,28 +27,29 @@ export interface HelpModalProps {
  * Uses shadcn/ui Dialog for accessible modal behavior.
  * Shows version info, keyboard shortcuts, and tab management tips.
  */
-const HelpModal: React.FC<HelpModalProps> = ({ open, onOpenChange, version = '0.0.1' }) => {
-  const kbdClass = [
+const HelpModal: React.FC<HelpModalProps> = ({ open, onOpenChange, version = VERSION }) => {
+  const { theme } = useKaleido();
+  const kbdClass = cn(
     'inline-flex items-center justify-center',
     'px-2 py-1 min-w-[1.5rem] h-6',
-    'bg-muted border border-border rounded-md',
+    'bg-surface-dim border border-border rounded-md',
     'text-xs font-mono font-medium text-foreground',
-    'shadow-sm',
-  ].join(' ');
+    'shadow-sm'
+  );
 
-  const shortcutRowClass = [
+  const shortcutRowClass = cn(
     'flex items-center justify-between gap-4',
-    'py-2.5 border-b border-border/50 last:border-0',
-  ].join(' ');
+    'py-2.5 border-b border-border/50 last:border-0'
+  );
 
-  const sectionTitleClass = [
-    'text-xs font-semibold uppercase tracking-wider text-muted-foreground',
-    'mt-6 mb-3',
-  ].join(' ');
+  const sectionTitleClass = cn(
+    'text-xs font-semibold uppercase tracking-wider text-secondary',
+    'mt-6 mb-3'
+  );
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md" theme={theme}>
         <DialogHeader>
           <DialogTitle>Dash Kaleido</DialogTitle>
           <DialogDescription>Version {version}</DialogDescription>
@@ -53,7 +57,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onOpenChange, version = '0.
 
         <div className="mt-4">
           <h4 className={sectionTitleClass}>Keyboard Shortcuts</h4>
-          <div className="rounded-lg border border-border bg-card p-3">
+          <div className="rounded-lg border border-border bg-surface p-3">
             <div className={shortcutRowClass}>
               <span className="text-sm text-foreground">New tab</span>
               <div className="flex items-center gap-1">
@@ -94,7 +98,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onOpenChange, version = '0.
               <div className="flex items-center gap-1">
                 <kbd className={kbdClass}>⌃</kbd>
                 <kbd className={kbdClass}>J</kbd>
-                <span className="text-muted-foreground text-xs">/</span>
+                <span className="text-secondary text-xs">/</span>
                 <kbd className={kbdClass}>K</kbd>
               </div>
             </div>
@@ -108,7 +112,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onOpenChange, version = '0.
               <span className="text-sm text-foreground">Navigate results</span>
               <div className="flex items-center gap-1">
                 <kbd className={kbdClass}>↑</kbd>
-                <span className="text-muted-foreground text-xs">/</span>
+                <span className="text-secondary text-xs">/</span>
                 <kbd className={kbdClass}>↓</kbd>
               </div>
             </div>
@@ -118,7 +122,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onOpenChange, version = '0.
                 <kbd className={kbdClass}>Enter</kbd>
               </div>
             </div>
-            <div className={shortcutRowClass}>
+            <div className={cn(shortcutRowClass, 'border-b-0')}>
               <span className="text-sm text-foreground">Cancel</span>
               <div className="flex items-center gap-1">
                 <kbd className={kbdClass}>Esc</kbd>
@@ -127,7 +131,7 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onOpenChange, version = '0.
           </div>
 
           <h4 className={sectionTitleClass}>Tab Management</h4>
-          <div className="rounded-lg border border-border bg-card p-3 space-y-2">
+          <div className="rounded-lg border border-border bg-surface p-3 space-y-2">
             <p className="text-sm text-foreground">Right-click a tab for context menu</p>
             <p className="text-sm text-foreground">Locked tabs cannot be closed or renamed</p>
           </div>

@@ -10,6 +10,9 @@ import NotificationArea from './NotificationArea';
 // Modular components
 import { TabBar, StatusBar, NewTabContent, LayoutWithIdProps } from './components';
 
+// Context
+import { KaleidoProvider } from './context';
+
 // Custom hooks
 import {
   useTabManagement,
@@ -21,6 +24,9 @@ import {
 
 // Utilities
 import { defaultSearchBarConfig, generateUUID } from '../utils';
+
+// Version
+import { VERSION } from '../../version';
 
 // UI Components
 import { Spinner } from '@/components/ui';
@@ -228,6 +234,8 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
     unlockTab: (tabId: string) => tabManagement.unlockTab(tabId),
     startRename: tabManagement.startRename,
     showInfo: handleInfo,
+    isInfoModalOpen: showInfoModal,
+    setShowInfoModal,
     searchInputRef: layoutSelection.searchInputRef,
     shouldShowSearchBar: !!shouldShowSearchBar,
     showSearchDropdown: layoutSelection.showSearchDropdown,
@@ -705,98 +713,103 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
   const idString = typeof id === 'object' ? JSON.stringify(id) : id;
 
   return (
-    <div
-      id={idString}
-      className={[
-        'kaleido-container flex flex-col h-full w-full',
-        `kaleido-theme-${theme} kaleido-size-${size}`,
-        isDashLoading && 'opacity-50 pointer-events-none',
-      ]
-        .filter(Boolean)
-        .join(' ')}
-      style={style}
-      data-dash-is-loading={isDashLoading || undefined}
-      {...dataAttributes}
-    >
-      {/* Search Bar - top position */}
-      {searchBarConfig.position === 'top' && renderSearchBar()}
+    <KaleidoProvider theme={theme} size={size} registeredLayouts={registeredLayouts}>
+      <div
+        id={idString}
+        className={[
+          'kaleido-container flex flex-col h-full w-full',
+          `kaleido-theme-${theme} kaleido-size-${size}`,
+          isDashLoading && 'opacity-50 pointer-events-none',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        style={style}
+        data-dash-is-loading={isDashLoading || undefined}
+        {...dataAttributes}
+      >
+        {/* Search Bar - top position */}
+        {searchBarConfig.position === 'top' && renderSearchBar()}
 
-      {/* Tab Bar */}
-      <TabBar
-        tabs={tabManagement.tabs}
-        activeTabId={tabManagement.activeTabId}
-        registeredLayouts={registeredLayouts}
-        canCloseTabs={true}
-        showContextMenu={true}
-        tabBarRef={tabBarRef}
-        onTabClick={tabManagement.selectTab}
-        onTabClose={tabManagement.removeTab}
-        onTabRename={(tabId: string, newName: string) => {
-          // Find the tab and rename it
-          const tab = tabManagement.tabs.find((t) => t.id === tabId);
-          if (tab) {
-            tabManagement.renameTab(tabId, newName);
-          }
-        }}
-        onTabLock={(tabId: string, locked: boolean) => {
-          if (locked) {
-            tabManagement.lockTab(tabId);
-          } else {
-            tabManagement.unlockTab(tabId);
-          }
-        }}
-        onTabPin={(tabId: string, pinned: boolean) => {
-          tabManagement.pinTab(tabId, pinned);
-        }}
-        onTabDuplicate={(tabId: string) => {
-          tabManagement.duplicateTab(tabId);
-        }}
-        onTabInfo={handleInfo}
-        onTabsReorder={tabManagement.setTabs}
-        onNewTab={tabManagement.addTab}
-        onShowHelp={() => setShowHelpModal(true)}
-        maxTabs={maxTabs}
-      />
+        {/* Tab Bar */}
+        <TabBar
+          tabs={tabManagement.tabs}
+          activeTabId={tabManagement.activeTabId}
+          registeredLayouts={registeredLayouts}
+          canCloseTabs={true}
+          showContextMenu={true}
+          tabBarRef={tabBarRef}
+          theme={theme}
+          editingTabId={tabManagement.editingTabId}
+          editingTabName={tabManagement.editingTabName}
+          renameInputRef={tabManagement.renameInputRef}
+          onTabClick={tabManagement.selectTab}
+          onTabClose={tabManagement.removeTab}
+          onTabStartRename={tabManagement.startRename}
+          onTabRenameChange={tabManagement.handleRenameInputChange}
+          onTabRenameBlur={tabManagement.handleRenameBlur}
+          onTabRenameKeyDown={tabManagement.handleRenameKeyDown}
+          onTabLock={(tabId: string, locked: boolean) => {
+            if (locked) {
+              tabManagement.lockTab(tabId);
+            } else {
+              tabManagement.unlockTab(tabId);
+            }
+          }}
+          onTabPin={(tabId: string, pinned: boolean) => {
+            tabManagement.pinTab(tabId, pinned);
+          }}
+          onTabDuplicate={(tabId: string) => {
+            tabManagement.duplicateTab(tabId);
+          }}
+          onTabInfo={handleInfo}
+          onTabShare={shareLinks.shareTab}
+          onTabsReorder={tabManagement.setTabs}
+          onNewTab={tabManagement.addTab}
+          onShowHelp={() => setShowHelpModal(true)}
+          maxTabs={maxTabs}
+        />
 
-      {/* Search Bar - under position (default) */}
-      {searchBarConfig.position === 'under' && renderSearchBar()}
+        {/* Search Bar - under position (default) */}
+        {searchBarConfig.position === 'under' && renderSearchBar()}
 
-      {/* Tab Content */}
-      <div className="flex-1 overflow-auto bg-background">{renderAllTabs()}</div>
+        {/* Tab Content */}
+        <div className="flex-1 overflow-auto bg-background">{renderAllTabs()}</div>
 
-      {/* Search Bar - bottom position */}
-      {searchBarConfig.position === 'bottom' && renderSearchBar()}
+        {/* Search Bar - bottom position */}
+        {searchBarConfig.position === 'bottom' && renderSearchBar()}
 
-      {/* Status Bar */}
-      <StatusBar
-        enabled={enableStatusBar}
-        tabs={tabManagement.tabs}
-        activeTab={activeTab}
-        registeredLayouts={registeredLayouts}
-        maxTabs={maxTabs}
-        lastSyncTime={dashSync.lastSyncTime}
-        currentMode={getCurrentMode()}
-        searchInputRef={layoutSelection.searchInputRef}
-        notifications={notifications}
-        setNotifications={setNotifications}
-        showNotificationHistory={showNotificationHistory}
-        setShowNotificationHistory={setShowNotificationHistory}
-      />
+        {/* Status Bar */}
+        <StatusBar
+          enabled={enableStatusBar}
+          tabs={tabManagement.tabs}
+          activeTab={activeTab}
+          registeredLayouts={registeredLayouts}
+          maxTabs={maxTabs}
+          lastSyncTime={dashSync.lastSyncTime}
+          currentMode={getCurrentMode()}
+          searchInputRef={layoutSelection.searchInputRef}
+          theme={theme}
+          notifications={notifications}
+          setNotifications={setNotifications}
+          showNotificationHistory={showNotificationHistory}
+          setShowNotificationHistory={setShowNotificationHistory}
+        />
 
-      {/* Info Modal */}
-      <InfoModal open={showInfoModal} onOpenChange={setShowInfoModal} tab={modalTab} />
+        {/* Info Modal */}
+        <InfoModal open={showInfoModal} onOpenChange={setShowInfoModal} tab={modalTab} />
 
-      {/* Help Modal */}
-      <HelpModal open={showHelpModal} onOpenChange={setShowHelpModal} version="0.0.1" />
+        {/* Help Modal */}
+        <HelpModal open={showHelpModal} onOpenChange={setShowHelpModal} version={VERSION} />
 
-      {/* Notification Area */}
-      <NotificationArea
-        notifications={notifications}
-        setNotifications={setNotifications}
-        showHistory={showNotificationHistory}
-        setShowHistory={setShowNotificationHistory}
-      />
-    </div>
+        {/* Notification Area */}
+        <NotificationArea
+          notifications={notifications}
+          setNotifications={setNotifications}
+          showHistory={showNotificationHistory}
+          setShowHistory={setShowNotificationHistory}
+        />
+      </div>
+    </KaleidoProvider>
   );
 };
 

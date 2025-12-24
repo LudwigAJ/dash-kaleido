@@ -25,13 +25,16 @@ export function useDashSync({
   // Track if we're currently updating from internal action
   const isInternalUpdate = useRef(false);
   const isTabsInternalUpdate = useRef(false);
-  const isInitialRender = useRef(true);
   const lastSentTabsDataSignature = useRef<string | null>(null);
 
   // Track if we've received initial props from Dash (for persistence)
+  // If persistence is enabled and we start with no tabs, wait for Dash to send persisted data
   const hasReceivedInitialProps = useRef(
-    !!(controlledTabs && Array.isArray(controlledTabs) && controlledTabs.length > 0)
+    !persistence || (controlledTabs && Array.isArray(controlledTabs) && controlledTabs.length > 0)
   );
+
+  // Track the number of renders to allow time for Dash to send persisted data
+  const renderCount = useRef(0);
 
   // Status bar sync time
   const [lastSyncTime, setLastSyncTime] = useState(Date.now());
@@ -84,13 +87,18 @@ export function useDashSync({
   useEffect(() => {
     if (!setProps) return;
 
-    // If persistence is enabled and this is the initial render,
-    // skip the first sync to allow Dash to potentially send persisted data.
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      if (persistence && (!controlledTabs || controlledTabs.length === 0)) {
+    renderCount.current += 1;
+
+    // If persistence is enabled and we haven't received initial props from Dash yet,
+    // wait a few renders to give Dash time to send persisted data.
+    // This prevents overwriting persisted data with default state.
+    if (persistence && !hasReceivedInitialProps.current) {
+      // After a few renders, assume no persisted data is coming
+      if (renderCount.current < 3) {
         return;
       }
+      // Mark that we've waited long enough
+      hasReceivedInitialProps.current = true;
     }
 
     const activeTab = tabs.find((tab) => tab.id === activeTabId);
@@ -154,7 +162,7 @@ export function useDashSync({
   return {
     lastSyncTime,
     markInternalUpdate,
-    hasReceivedInitialProps: hasReceivedInitialProps.current,
+    hasReceivedInitialProps: hasReceivedInitialProps.current ?? false,
   };
 }
 

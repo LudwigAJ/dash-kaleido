@@ -31,11 +31,13 @@ export interface DialogContentProps extends React.ComponentPropsWithoutRef<
 > {
   showClose?: boolean;
   container?: HTMLElement;
+  /** Theme to apply - needed for portal rendering outside main container */
+  theme?: 'light' | 'dark';
 }
 
 /**
  * Dialog content with shadcn/ui styling
- * Uses CSS variables with fallbacks for portal rendering
+ * Theme class provides all CSS variables for proper theming in portals.
  */
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
@@ -49,51 +51,53 @@ const DialogContent = React.forwardRef<
       onEscapeKeyDown,
       onInteractOutside,
       container,
+      theme = 'light',
       ...props
     },
     ref
-  ) => (
-    <DialogPortal container={container}>
-      <DialogOverlay />
-      <DialogPrimitive.Content
-        ref={ref}
-        onEscapeKeyDown={onEscapeKeyDown}
-        onInteractOutside={onInteractOutside}
-        className={cn(
-          'fixed left-1/2 top-1/2 z-[9999] -translate-x-1/2 -translate-y-1/2',
-          'w-full max-w-md',
-          'rounded-lg shadow-lg',
-          'p-6',
-          className
-        )}
-        style={{
-          backgroundColor: 'var(--kaleido-background, #ffffff)',
-          borderColor: 'var(--kaleido-border, #e2e8f0)',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          color: 'var(--kaleido-foreground, #0f172a)',
-        }}
-        {...props}
-      >
-        {children}
-        {showClose && (
-          <DialogPrimitive.Close
-            className={cn(
-              'absolute right-4 top-4',
-              'rounded-sm opacity-70 transition-opacity',
-              'hover:opacity-100',
-              'focus:outline-none focus:ring-2 focus:ring-offset-2',
-              'disabled:pointer-events-none'
-            )}
-            style={{ color: 'var(--kaleido-foreground, #0f172a)' }}
-          >
-            <Cross2Icon className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </DialogPrimitive.Close>
-        )}
-      </DialogPrimitive.Content>
-    </DialogPortal>
-  )
+  ) => {
+    const themeClass = theme === 'dark' ? 'kaleido-theme-dark' : 'kaleido-theme-light';
+
+    return (
+      <DialogPortal container={container}>
+        <DialogOverlay />
+        <DialogPrimitive.Content
+          ref={ref}
+          onEscapeKeyDown={onEscapeKeyDown}
+          onInteractOutside={onInteractOutside}
+          className={cn(
+            'fixed left-1/2 top-1/2 z-[9999] -translate-x-1/2 -translate-y-1/2',
+            'w-full max-w-md',
+            'rounded-lg shadow-lg',
+            'p-6 border',
+            // Theme class provides all CSS variables
+            themeClass,
+            // Use Tailwind classes that reference CSS variables
+            'bg-background text-foreground border-border',
+            className
+          )}
+          {...props}
+        >
+          {children}
+          {showClose && (
+            <DialogPrimitive.Close
+              className={cn(
+                'absolute right-4 top-4',
+                'rounded-sm opacity-70 transition-opacity',
+                'hover:opacity-100',
+                'focus:outline-none focus:ring-2 focus:ring-offset-2',
+                'disabled:pointer-events-none',
+                'text-foreground'
+              )}
+            >
+              <Cross2Icon className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </DialogPrimitive.Close>
+          )}
+        </DialogPrimitive.Content>
+      </DialogPortal>
+    );
+  }
 );
 
 DialogContent.displayName = DialogPrimitive.Content.displayName;

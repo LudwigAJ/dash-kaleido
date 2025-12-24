@@ -86,6 +86,7 @@ export interface UseTabManagementReturn {
   cancelRename: () => void;
   handleRenameInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleRenameBlur: () => void;
+  handleRenameKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 // =============================================================================
@@ -291,6 +292,10 @@ export interface UseKeyboardShortcutsOptions {
   startRename: (tab: Tab) => void;
   /** Show info modal for a tab */
   showInfo: (tab: Tab) => void;
+  /** Whether info modal is currently open */
+  isInfoModalOpen: boolean;
+  /** Set info modal visibility */
+  setShowInfoModal: React.Dispatch<React.SetStateAction<boolean>>;
   /** Ref to search input */
   searchInputRef: React.RefObject<HTMLInputElement> | null;
   /** Whether search bar is visible */

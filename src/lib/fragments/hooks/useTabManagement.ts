@@ -261,6 +261,30 @@ export function useTabManagement({
     }, 0);
   }, []);
 
+  // Handle rename key down - Enter to finish, Escape to cancel
+  const handleRenameKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const tabId = editingTabIdRef.current;
+      const tabName = editingTabNameRef.current;
+      if (tabId && tabName.trim()) {
+        setTabs((prevTabs) =>
+          prevTabs.map((t) => (t.id === tabId ? { ...t, name: tabName.trim() } : t))
+        );
+      }
+      editingTabIdRef.current = null;
+      editingTabNameRef.current = '';
+      setEditingTabId(null);
+      setEditingTabName('');
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      editingTabIdRef.current = null;
+      editingTabNameRef.current = '';
+      setEditingTabId(null);
+      setEditingTabName('');
+    }
+  }, []);
+
   // Update a tab's layout
   const updateTabLayout = useCallback(
     (
@@ -318,6 +342,7 @@ export function useTabManagement({
     cancelRename,
     handleRenameInputChange,
     handleRenameBlur,
+    handleRenameKeyDown,
   };
 }
 

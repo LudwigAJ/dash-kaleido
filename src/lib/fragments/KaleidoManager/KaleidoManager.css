@@ -9,6 +9,10 @@
    to Tailwind in globals.css via @theme inline.
    ============================================ */
 
+/* ============================================
+   SHARED VARIABLES (non-theme-specific)
+   Applied to container, inherited by children
+   ============================================ */
 .kaleido-container {
   /* Typography */
   --kaleido-font-family:
@@ -20,28 +24,7 @@
   --kaleido-font-size-lg: 16px;
   --kaleido-font-size-xl: 18px;
 
-  /* ============================================
-       LIGHT THEME (Default)
-       ============================================ */
-  --kaleido-background: #ffffff;
-  --kaleido-foreground: #0f172a;
-  --kaleido-surface: #f8fafc;
-  --kaleido-surface-foreground: #0f172a;
-  --kaleido-surface-dim: #e2e8f0;
-  --kaleido-popover: #ffffff;
-  --kaleido-popover-foreground: #0f172a;
-  --kaleido-primary: #3b82f6;
-  --kaleido-secondary: #64748b;
-  --kaleido-tertiary: #b45309;
-  --kaleido-accent: #f1f5f9;
-  --kaleido-accent-foreground: #0f172a;
-  --kaleido-muted: #f1f5f9;
-  --kaleido-muted-foreground: #64748b;
-  --kaleido-destructive: #ef4444;
-  --kaleido-border: #e2e8f0;
-  --kaleido-input: #f1f5f9;
-
-  /* Shadows */
+  /* Shadows (light theme defaults, overridden in dark) */
   --kaleido-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --kaleido-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
   --kaleido-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -60,9 +43,37 @@
 }
 
 /* ============================================
-   DARK THEME
+   LIGHT THEME
+   Standalone class - works anywhere it's applied
    ============================================ */
-.kaleido-container.kaleido-theme-dark,
+.kaleido-theme-light {
+  --kaleido-background: #ffffff;
+  --kaleido-foreground: #0f172a;
+  --kaleido-surface: #f8fafc;
+  --kaleido-surface-foreground: #0f172a;
+  --kaleido-surface-dim: #e2e8f0;
+  --kaleido-popover: #ffffff;
+  --kaleido-popover-foreground: #0f172a;
+  --kaleido-primary: #3b82f6;
+  --kaleido-secondary: #64748b;
+  --kaleido-tertiary: #b45309;
+  --kaleido-accent: #f1f5f9;
+  --kaleido-accent-foreground: #0f172a;
+  --kaleido-muted: #f1f5f9;
+  --kaleido-muted-foreground: #64748b;
+  --kaleido-destructive: #ef4444;
+  --kaleido-border: #e2e8f0;
+  --kaleido-input: #f1f5f9;
+
+  --kaleido-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --kaleido-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --kaleido-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================
+   DARK THEME
+   Standalone class - works anywhere it's applied
+   ============================================ */
 .kaleido-theme-dark {
   --kaleido-background: #0f172a;
   --kaleido-foreground: #f8fafc;
@@ -74,7 +85,7 @@
   --kaleido-primary: #60a5fa;
   --kaleido-secondary: #94a3b8;
   --kaleido-tertiary: #f59e0b;
-  --kaleido-accent: #1e293b;
+  --kaleido-accent: #334155;
   --kaleido-accent-foreground: #f8fafc;
   --kaleido-muted: #1e293b;
   --kaleido-muted-foreground: #94a3b8;
@@ -85,55 +96,6 @@
   --kaleido-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --kaleido-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --kaleido-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
-}
-
-/* ============================================
-   PORTAL THEMING (Radix UI)
-   Portals render outside .kaleido-container,
-   so they need explicit variable definitions.
-   ============================================ */
-
-[data-radix-popper-content-wrapper],
-[data-radix-portal] {
-  --kaleido-background: #ffffff;
-  --kaleido-foreground: #0f172a;
-  --kaleido-surface: #f8fafc;
-  --kaleido-surface-foreground: #0f172a;
-  --kaleido-surface-dim: #f1f5f9;
-  --kaleido-popover: #ffffff;
-  --kaleido-popover-foreground: #0f172a;
-  --kaleido-primary: #3b82f6;
-  --kaleido-secondary: #64748b;
-  --kaleido-border: #e2e8f0;
-  --kaleido-destructive: #ef4444;
-  --kaleido-accent: #f1f5f9;
-  --kaleido-accent-foreground: #0f172a;
-  --kaleido-input: #ffffff;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-/* Dark theme portal styles */
-.kaleido-theme-dark ~ [data-radix-popper-content-wrapper],
-.kaleido-theme-dark ~ [data-radix-portal],
-body:has(.kaleido-theme-dark) [data-radix-popper-content-wrapper],
-body:has(.kaleido-theme-dark) [data-radix-portal] {
-  --kaleido-background: #0f172a;
-  --kaleido-foreground: #f8fafc;
-  --kaleido-surface: #1e293b;
-  --kaleido-surface-foreground: #f8fafc;
-  --kaleido-surface-dim: #334155;
-  --kaleido-popover: #1e293b;
-  --kaleido-popover-foreground: #f8fafc;
-  --kaleido-primary: #60a5fa;
-  --kaleido-secondary: #94a3b8;
-  --kaleido-border: #475569;
-  --kaleido-destructive: #f87171;
-  --kaleido-accent: #334155;
-  --kaleido-accent-foreground: #f8fafc;
-  --kaleido-input: #1e293b;
 }
 
 /* ============================================

@@ -102,4 +102,10 @@ const KaleidoManager = (props: Props) => {
 // Critical: Tell Dash that children can be updated dynamically
 (KaleidoManager as any).dashChildrenUpdate = true;
 
+// Default props for Dash persistence
+KaleidoManager.defaultProps = {
+  persisted_props: ['activeTab', 'tabs'],
+  persistence_type: 'local',
+};
+
 export default KaleidoManager;

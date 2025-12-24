@@ -75,11 +75,11 @@ Keyword arguments:
     Used to allow user interactions to be persisted when the component
     or page is refreshed.
 
-- persisted_props (list of strings; optional):
+- persisted_props (list of strings; default ['activeTab', 'tabs']):
     Properties whose user interactions will persist after refreshing.
     Defaults to ['activeTab', 'tabs'].
 
-- persistence_type (string; optional):
+- persistence_type (string; default 'local'):
     Where persisted user changes will be stored: 'memory', 'local', or
     'session'.
 

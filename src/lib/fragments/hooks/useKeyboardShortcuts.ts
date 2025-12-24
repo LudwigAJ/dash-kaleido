@@ -25,6 +25,8 @@ export function useKeyboardShortcuts({
   unlockTab,
   startRename,
   showInfo,
+  isInfoModalOpen,
+  setShowInfoModal,
   searchInputRef,
   shouldShowSearchBar,
   showSearchDropdown,
@@ -85,9 +87,15 @@ export function useKeyboardShortcuts({
         return;
       }
 
-      // Ctrl/Cmd + I: Show info for current tab (if it has a layout)
+      // Ctrl/Cmd + I: Toggle info for current tab (if it has a layout)
       if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
         e.preventDefault();
+        // If info modal is open, close it
+        if (isInfoModalOpen) {
+          setShowInfoModal(false);
+          return;
+        }
+        // Otherwise, open it for the current tab (if it has a layout)
         const currentTab = tabs.find((t) => t.id === activeTabId);
         if (currentTab && currentTab.layoutId) {
           showInfo(currentTab);
@@ -148,6 +156,8 @@ export function useKeyboardShortcuts({
     unlockTab,
     startRename,
     showInfo,
+    isInfoModalOpen,
+    setShowInfoModal,
     searchInputRef,
     shouldShowSearchBar,
     showSearchDropdown,

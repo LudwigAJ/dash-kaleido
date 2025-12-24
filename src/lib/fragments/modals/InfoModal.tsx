@@ -8,6 +8,8 @@ import {
   DialogFooter,
   Button,
 } from '@/components/ui';
+import { cn } from '@/utils/cn';
+import { useKaleido } from '../KaleidoManager/context';
 
 export interface InfoModalProps {
   /** Whether the modal is open */
@@ -25,29 +27,30 @@ export interface InfoModalProps {
  * Shows tab name, ID, creation date, layout, lock status, and parameters.
  */
 const InfoModal: React.FC<InfoModalProps> = ({ open, onOpenChange, tab }) => {
-  const rowClass = [
+  const { theme } = useKaleido();
+  const rowClass = cn(
     'flex items-center justify-between gap-4 py-2.5',
-    'border-b border-border/50 last:border-0',
-  ].join(' ');
+    'border-b border-border/50 last:border-0'
+  );
 
-  const labelClass = 'text-sm text-muted-foreground';
+  const labelClass = 'text-sm text-secondary';
   const valueClass = 'text-sm font-medium text-foreground';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md" theme={theme}>
         <DialogHeader>
           <DialogTitle>Tab Information</DialogTitle>
         </DialogHeader>
         {tab && (
-          <div className="mt-4 rounded-lg border border-border bg-card p-4">
+          <div className="mt-4 rounded-lg border border-border bg-surface p-4">
             <div className={rowClass}>
               <span className={labelClass}>Name</span>
               <span className={valueClass}>{tab.name}</span>
             </div>
             <div className={rowClass}>
               <span className={labelClass}>ID</span>
-              <span className="text-xs font-mono text-muted-foreground">{tab.id}</span>
+              <span className="text-xs font-mono text-secondary">{tab.id}</span>
             </div>
             <div className={rowClass}>
               <span className={labelClass}>Created</span>
@@ -62,7 +65,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ open, onOpenChange, tab }) => {
               <span className={valueClass}>{tab.locked ? 'Yes' : 'No'}</span>
             </div>
             {(tab.layoutParams || tab.layoutParamOptionKey) && (
-              <div className={rowClass}>
+              <div className={cn(rowClass, 'border-b-0')}>
                 <span className={labelClass}>Parameters</span>
                 <span className={valueClass}>
                   {tab.layoutParamOptionKey ? (

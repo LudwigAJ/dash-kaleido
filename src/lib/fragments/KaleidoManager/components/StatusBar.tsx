@@ -17,6 +17,8 @@ export interface StatusBarProps {
   lastSyncTime?: number;
   currentMode?: StatusBarMode | null;
   searchInputRef?: React.RefObject<HTMLInputElement>;
+  /** Theme for popover styling */
+  theme?: 'light' | 'dark';
   notifications?: Notification[];
   setNotifications?: React.Dispatch<React.SetStateAction<Notification[]>>;
   showNotificationHistory?: boolean;
@@ -43,6 +45,7 @@ const StatusBar: React.FC<StatusBarProps> = ({
   lastSyncTime = Date.now(),
   currentMode,
   searchInputRef,
+  theme = 'light',
   notifications = [],
   setNotifications,
   showNotificationHistory = false,
@@ -144,33 +147,36 @@ const StatusBar: React.FC<StatusBarProps> = ({
         </PopoverTrigger>
         {activeTab && (
           <PopoverContent
-            className="w-auto min-w-40 p-2 rounded-b-none"
+            className="w-auto min-w-48 p-3 rounded-b-none"
             side="top"
             sideOffset={0}
             align="start"
+            theme={theme}
           >
-            <div className="space-y-1 text-xs">
-              <div className="flex justify-between gap-3">
-                <span className="text-secondary">Name:</span>
-                <span className="text-foreground">{activeTab.name}</span>
+            <div className="space-y-0">
+              <div className="flex items-center justify-between gap-4 py-2 border-b border-border/50">
+                <span className="text-xs text-secondary">Name</span>
+                <span className="text-xs font-medium text-foreground">{activeTab.name}</span>
               </div>
-              <div className="flex justify-between gap-3">
-                <span className="text-secondary">ID:</span>
-                <span className="text-foreground font-mono" style={{ fontSize: '10px' }}>
-                  {activeTab.id}
+              <div className="flex items-center justify-between gap-4 py-2 border-b border-border/50">
+                <span className="text-xs text-secondary">ID</span>
+                <span className="text-xs font-mono text-secondary">{activeTab.id}</span>
+              </div>
+              <div className="flex items-center justify-between gap-4 py-2 border-b border-border/50">
+                <span className="text-xs text-secondary">Created</span>
+                <span className="text-xs font-medium text-foreground">
+                  {formatFullDate(activeTab.createdAt)}
                 </span>
               </div>
-              <div className="flex justify-between gap-3">
-                <span className="text-secondary">Created:</span>
-                <span className="text-foreground">{formatFullDate(activeTab.createdAt)}</span>
+              <div className="flex items-center justify-between gap-4 py-2 border-b border-border/50">
+                <span className="text-xs text-secondary">Layout</span>
+                <span className="text-xs font-medium text-foreground">
+                  {activeTab.layoutId || 'None'}
+                </span>
               </div>
-              <div className="flex justify-between gap-3">
-                <span className="text-secondary">Layout:</span>
-                <span className="text-foreground">{activeTab.layoutId || 'None'}</span>
-              </div>
-              <div className="flex justify-between gap-3 items-center">
-                <span className="text-secondary">Locked:</span>
-                <span className="flex items-center gap-1 text-foreground">
+              <div className="flex items-center justify-between gap-4 py-2 border-b border-border/50 last:border-0">
+                <span className="text-xs text-secondary">Locked</span>
+                <span className="flex items-center gap-1 text-xs font-medium text-foreground">
                   {activeTab.locked ? (
                     <>
                       <LockClosedIcon className="w-2.5 h-2.5" /> Yes
@@ -181,10 +187,16 @@ const StatusBar: React.FC<StatusBarProps> = ({
                 </span>
               </div>
               {(activeTab.layoutParams || activeTab.layoutParamOptionKey) && (
-                <div className="flex justify-between gap-3">
-                  <span className="text-secondary">Params:</span>
-                  <span className="text-foreground" style={{ fontSize: '10px' }}>
-                    {activeTab.layoutParamOptionKey || JSON.stringify(activeTab.layoutParams)}
+                <div className="flex items-center justify-between gap-4 py-2">
+                  <span className="text-xs text-secondary">Params</span>
+                  <span className="text-xs font-medium text-foreground">
+                    {activeTab.layoutParamOptionKey ? (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
+                        {activeTab.layoutParamOptionKey}
+                      </span>
+                    ) : (
+                      JSON.stringify(activeTab.layoutParams)
+                    )}
                   </span>
                 </div>
               )}
