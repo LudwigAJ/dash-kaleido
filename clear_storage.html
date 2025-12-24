@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Dash Kaleido Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #c0392b;
+        }
+        .success {
+            color: #27ae60;
+            margin-top: 15px;
+            display: none;
+        }
+        .info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Clear Dash Kaleido Storage</h1>
+        <p>This will clear all stored tab data for the Dash Kaleido component.</p>
+        <p>After clearing, refresh your Dash app (http://127.0.0.1:8050) to start fresh with a "New Tab".</p>
+        
+        <button onclick="clearStorage()">Clear Storage</button>
+        
+        <div class="success" id="success">✓ Storage cleared successfully!</div>
+        
+        <div class="info">
+            <strong>Note:</strong> Make sure you're accessing this page from the same origin as your Dash app (e.g., file:// or localhost) for this to work.
+        </div>
+    </div>
+    
+    <script>
+        function clearStorage() {
+            // Clear all kaleido-related items from localStorage
+            const keys = Object.keys(localStorage);
+            let cleared = 0;
+            
+            keys.forEach(key => {
+                if (key.startsWith('kaleido-')) {
+                    localStorage.removeItem(key);
+                    cleared++;
+                }
+            });
+            
+            // Also clear sessionStorage
+            const sessionKeys = Object.keys(sessionStorage);
+            sessionKeys.forEach(key => {
+                if (key.startsWith('kaleido-')) {
+                    sessionStorage.removeItem(key);
+                    cleared++;
+                }
+            });
+            
+            document.getElementById('success').style.display = 'block';
+            console.log(`Cleared ${cleared} storage items`);
+            
+            setTimeout(() => {
+                document.getElementById('success').style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

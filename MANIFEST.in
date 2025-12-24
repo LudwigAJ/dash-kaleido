@@ -1,0 +1,11 @@
+include dash_kaleido/dash_kaleido.min.js
+include dash_kaleido/dash_kaleido.min.js.map
+include dash_kaleido/async-*.js
+include dash_kaleido/async-*.js.map
+include dash_kaleido/*-shared.js
+include dash_kaleido/*-shared.js.map
+include dash_kaleido/metadata.json
+include dash_kaleido/package-info.json
+include README.md
+include LICENSE
+include package.json
