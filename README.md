@@ -38,11 +38,11 @@ pip install -e .
 ### Requirements
 
 - **Python**: >= 3.8
-- **Dash**: >= 2.0.0
+- **Dash**: >= 2.4.0 (TypeScript component support)
 - **Node.js**: >= 18 (for development only)
 
 **Python Dependencies:**
-- `dash` >= 2.0.0
+- `dash` >= 2.4.0
 - `plotly` (typically installed with Dash)
 
 ## Quick Start
