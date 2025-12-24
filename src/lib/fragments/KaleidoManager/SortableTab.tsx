@@ -31,6 +31,8 @@ export interface SortableTabProps {
   editingTabName?: string;
   /** Ref for the rename input element */
   renameInputRef?: React.RefObject<HTMLInputElement>;
+  /** Theme for context menu styling */
+  theme?: 'light' | 'dark';
   /** Called when tab is clicked */
   onSelect: (tabId: string) => void;
   /** Called when tab is double-clicked */
@@ -74,6 +76,7 @@ const SortableTab: React.FC<SortableTabProps> = ({
   isLoading = false,
   editingTabName = '',
   renameInputRef,
+  theme = 'light',
   onSelect,
   onDoubleClick,
   onClose,
@@ -86,14 +89,7 @@ const SortableTab: React.FC<SortableTabProps> = ({
   onLock,
   onUnlock,
 }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: tab.id,
     disabled: isEditing || isLocked,
   });
@@ -129,17 +125,12 @@ const SortableTab: React.FC<SortableTabProps> = ({
         >
           {/* Tab name - always present for size stability */}
           <span
-            className={[
-              'truncate max-w-32 flex items-center gap-1.5',
-              isEditing && 'invisible',
-            ]
+            className={['whitespace-nowrap flex items-center gap-1.5', isEditing && 'invisible']
               .filter(Boolean)
               .join(' ')}
           >
-            {tab.name}
-            {isLoading && (
-              <UpdateIcon className="w-3 h-3 animate-spin text-primary" />
-            )}
+            {tab.name.length > 24 ? `${tab.name.slice(0, 24)}…` : tab.name}
+            {isLoading && <UpdateIcon className="w-3 h-3 animate-spin text-primary" />}
           </span>
           {/* Rename input - absolutely positioned over the tab name */}
           {isEditing && (
@@ -181,7 +172,7 @@ const SortableTab: React.FC<SortableTabProps> = ({
           )}
         </div>
       </ContextMenuTrigger>
-      <ContextMenuContent className="min-w-36">
+      <ContextMenuContent className="min-w-36" theme={theme}>
         <ContextMenuItem disabled={isLocked} onSelect={() => onRename(tab)}>
           Rename
           <ContextMenuShortcut>^R</ContextMenuShortcut>
@@ -190,11 +181,7 @@ const SortableTab: React.FC<SortableTabProps> = ({
           Info
           <ContextMenuShortcut>^I</ContextMenuShortcut>
         </ContextMenuItem>
-        {tab.layoutId && (
-          <ContextMenuItem onSelect={() => onShare(tab)}>
-            Share
-          </ContextMenuItem>
-        )}
+        {tab.layoutId && <ContextMenuItem onSelect={() => onShare(tab)}>Share</ContextMenuItem>}
         {tab.layoutId && !isLocked && (
           <ContextMenuItem onSelect={() => onLock(tab)}>
             Lock Tab
@@ -208,11 +195,7 @@ const SortableTab: React.FC<SortableTabProps> = ({
           </ContextMenuItem>
         )}
         <ContextMenuSeparator />
-        <ContextMenuItem
-          variant="destructive"
-          disabled={isLocked}
-          onSelect={() => onClose(tab.id)}
-        >
+        <ContextMenuItem variant="destructive" disabled={isLocked} onSelect={() => onClose(tab.id)}>
           Close Tab
           <ContextMenuShortcut>^D</ContextMenuShortcut>
         </ContextMenuItem>

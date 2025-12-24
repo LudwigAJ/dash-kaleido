@@ -86,6 +86,7 @@ export interface UseTabManagementReturn {
   cancelRename: () => void;
   handleRenameInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleRenameBlur: () => void;
+  handleRenameKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 // =============================================================================
@@ -125,10 +126,7 @@ export interface LayoutInfo {
     annotation?: string | null;
   }>;
   allowMultiple?: boolean;
-  parameterOptions?: Record<
-    string,
-    { description: string; params: Record<string, string> }
-  >;
+  parameterOptions?: Record<string, { description: string; params: Record<string, string> }>;
 }
 
 export interface LoadingLayoutInfo {
@@ -171,10 +169,7 @@ export interface LayoutSelectionState {
   paramInputValue: string;
   showingDefault: boolean;
   showParamOptionsDropdown: boolean;
-  paramOptions: Record<
-    string,
-    { description: string; params: Record<string, string> }
-  >;
+  paramOptions: Record<string, { description: string; params: Record<string, string> }>;
   selectedParamOptionIndex: number;
   loadingLayoutInfo: LoadingLayoutInfo | null;
 }
@@ -190,9 +185,7 @@ export interface UseLayoutSelectionReturn extends LayoutSelectionState {
   setShowingDefault: React.Dispatch<React.SetStateAction<boolean>>;
   setShowParamOptionsDropdown: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedParamOptionIndex: React.Dispatch<React.SetStateAction<number>>;
-  setLoadingLayoutInfo: React.Dispatch<
-    React.SetStateAction<LoadingLayoutInfo | null>
-  >;
+  setLoadingLayoutInfo: React.Dispatch<React.SetStateAction<LoadingLayoutInfo | null>>;
 
   // Derived state
   isCollectingParams: boolean;
@@ -213,10 +206,7 @@ export interface UseLayoutSelectionReturn extends LayoutSelectionState {
   }>;
   getLayoutParamOptions: (
     layoutId: string
-  ) => Record<
-    string,
-    { description: string; params: Record<string, string> }
-  > | null;
+  ) => Record<string, { description: string; params: Record<string, string> }> | null;
   isLayoutDisabled: (layoutId: string) => boolean;
   getFilteredLayouts: () => LayoutInfo[];
   getDropdownLayouts: () => LayoutInfo[];
@@ -302,6 +292,10 @@ export interface UseKeyboardShortcutsOptions {
   startRename: (tab: Tab) => void;
   /** Show info modal for a tab */
   showInfo: (tab: Tab) => void;
+  /** Whether info modal is currently open */
+  isInfoModalOpen: boolean;
+  /** Set info modal visibility */
+  setShowInfoModal: React.Dispatch<React.SetStateAction<boolean>>;
   /** Ref to search input */
   searchInputRef: React.RefObject<HTMLInputElement> | null;
   /** Whether search bar is visible */
@@ -339,10 +333,7 @@ export interface UseShareLinksOptions {
   /** Set active tab function */
   setActiveTabId: React.Dispatch<React.SetStateAction<string | null>>;
   /** Add notification function */
-  addNotification?: (
-    type: Notification['type'],
-    message: string
-  ) => void;
+  addNotification?: (type: Notification['type'], message: string) => void;
 }
 
 export interface UseShareLinksReturn {

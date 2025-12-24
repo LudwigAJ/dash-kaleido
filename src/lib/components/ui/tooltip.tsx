@@ -65,11 +65,4 @@ const Tooltip = ({
   );
 };
 
-export {
-  Tooltip,
-  TooltipProvider,
-  TooltipRoot,
-  TooltipTrigger,
-  TooltipContent,
-  TooltipPortal,
-};
+export { Tooltip, TooltipProvider, TooltipRoot, TooltipTrigger, TooltipContent, TooltipPortal };

@@ -31,13 +31,29 @@ export interface TabBarProps {
   canCloseTabs?: boolean;
   showContextMenu?: boolean;
   tabBarRef?: React.RefObject<HTMLDivElement>;
+  /** Theme for context menu styling */
+  theme?: 'light' | 'dark';
+  /** ID of the tab currently being edited (renamed) */
+  editingTabId?: string | null;
+  /** Current value of the rename input */
+  editingTabName?: string;
+  /** Ref for the rename input element */
+  renameInputRef?: React.RefObject<HTMLInputElement>;
   onTabClick: (tabId: string) => void;
   onTabClose: (tabId: string) => void;
-  onTabRename?: (tabId: string, newName: string) => void;
+  /** Called to initiate rename mode for a tab */
+  onTabStartRename?: (tab: Tab) => void;
+  /** Called when rename input value changes */
+  onTabRenameChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  /** Called when rename input loses focus */
+  onTabRenameBlur?: () => void;
+  /** Called when key is pressed in rename input */
+  onTabRenameKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onTabLock?: (tabId: string, locked: boolean) => void;
   onTabPin?: (tabId: string, pinned: boolean) => void;
   onTabDuplicate?: (tabId: string) => void;
   onTabInfo?: (tab: Tab) => void;
+  onTabShare?: (tab: Tab) => void;
   onTabsReorder: (tabs: Tab[]) => void;
   onNewTab: () => void;
   onShowHelp?: () => void;
@@ -60,13 +76,21 @@ const TabBar: React.FC<TabBarProps> = ({
   canCloseTabs = true,
   showContextMenu = true,
   tabBarRef,
+  theme = 'light',
+  editingTabId = null,
+  editingTabName = '',
+  renameInputRef,
   onTabClick,
   onTabClose,
-  onTabRename,
+  onTabStartRename,
+  onTabRenameChange,
+  onTabRenameBlur,
+  onTabRenameKeyDown,
   onTabLock,
   onTabPin,
   onTabDuplicate,
   onTabInfo,
+  onTabShare,
   onTabsReorder,
   onNewTab,
   onShowHelp,
@@ -100,25 +124,31 @@ const TabBar: React.FC<TabBarProps> = ({
   const tabIds = useMemo(() => sortedTabs.map((tab) => tab.id), [sortedTabs]);
 
   // DnD Kit handlers
-  const handleDragStart = useCallback((event: DragStartEvent) => {
-    const tab = tabs.find((t) => t.id === event.active.id);
-    if (tab) {
-      setDraggedTab(tab);
-    }
-  }, [tabs]);
+  const handleDragStart = useCallback(
+    (event: DragStartEvent) => {
+      const tab = tabs.find((t) => t.id === event.active.id);
+      if (tab) {
+        setDraggedTab(tab);
+      }
+    },
+    [tabs]
+  );
 
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
 
-    if (over && active.id !== over.id) {
-      const oldIndex = tabs.findIndex((t) => t.id === active.id);
-      const newIndex = tabs.findIndex((t) => t.id === over.id);
-      const newTabs = arrayMove(tabs, oldIndex, newIndex);
-      onTabsReorder?.(newTabs);
-    }
+      if (over && active.id !== over.id) {
+        const oldIndex = tabs.findIndex((t) => t.id === active.id);
+        const newIndex = tabs.findIndex((t) => t.id === over.id);
+        const newTabs = arrayMove(tabs, oldIndex, newIndex);
+        onTabsReorder?.(newTabs);
+      }
 
-    setDraggedTab(null);
-  }, [tabs, onTabsReorder]);
+      setDraggedTab(null);
+    },
+    [tabs, onTabsReorder]
+  );
 
   const handleDragCancel = useCallback(() => {
     setDraggedTab(null);
@@ -134,10 +164,7 @@ const TabBar: React.FC<TabBarProps> = ({
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <SortableContext
-        items={tabIds}
-        strategy={horizontalListSortingStrategy}
-      >
+      <SortableContext items={tabIds} strategy={horizontalListSortingStrategy}>
         <div
           ref={tabBarRef}
           className={[
@@ -152,6 +179,7 @@ const TabBar: React.FC<TabBarProps> = ({
           {sortedTabs.map((tab) => {
             const isLocked = tab.locked === true;
             const isLoading = tab.loading === true;
+            const isEditing = editingTabId === tab.id;
 
             return (
               <SortableTab
@@ -160,12 +188,19 @@ const TabBar: React.FC<TabBarProps> = ({
                 isActive={tab.id === activeTabId}
                 isLocked={isLocked}
                 isLoading={isLoading}
+                isEditing={isEditing}
+                editingTabName={isEditing ? editingTabName : ''}
+                renameInputRef={isEditing ? renameInputRef : undefined}
+                theme={theme}
                 onSelect={(tabId) => onTabClick(tabId)}
-                onDoubleClick={(t) => !isLocked && onTabRename?.(t.id, t.name)}
+                onDoubleClick={(t) => !isLocked && onTabStartRename?.(t)}
                 onClose={(tabId) => onTabClose(tabId)}
-                onRename={(t) => onTabRename?.(t.id, t.name)}
+                onRename={(t) => onTabStartRename?.(t)}
+                onRenameChange={onTabRenameChange}
+                onRenameBlur={onTabRenameBlur}
+                onRenameKeyDown={onTabRenameKeyDown}
                 onInfo={(t) => onTabInfo?.(t)}
-                onShare={() => {}}
+                onShare={(t) => onTabShare?.(t)}
                 onLock={(t) => onTabLock?.(t.id, true)}
                 onUnlock={(t) => onTabLock?.(t.id, false)}
               />
@@ -224,9 +259,7 @@ const TabBar: React.FC<TabBarProps> = ({
       </SortableContext>
 
       {/* Drag overlay - shows the tab being dragged */}
-      <DragOverlay>
-        {draggedTab ? <TabOverlay tab={draggedTab} /> : null}
-      </DragOverlay>
+      <DragOverlay>{draggedTab ? <TabOverlay tab={draggedTab} /> : null}</DragOverlay>
     </DndContext>
   );
 };

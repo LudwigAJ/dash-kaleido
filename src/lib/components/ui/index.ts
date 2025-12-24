@@ -47,20 +47,9 @@ export {
 export type { DialogContentProps } from './dialog';
 
 export { Spinner, LoadingOverlay, spinnerSizes } from './spinner';
-export type {
-  SpinnerProps,
-  SpinnerSize,
-  LoadingOverlayProps,
-} from './spinner';
+export type { SpinnerProps, SpinnerSize, LoadingOverlayProps } from './spinner';
 
-export {
-  Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from './card';
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from './card';
 export type { CardProps } from './card';
 
 export {

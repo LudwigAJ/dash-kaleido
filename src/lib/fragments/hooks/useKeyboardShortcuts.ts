@@ -25,6 +25,8 @@ export function useKeyboardShortcuts({
   unlockTab,
   startRename,
   showInfo,
+  isInfoModalOpen,
+  setShowInfoModal,
   searchInputRef,
   shouldShowSearchBar,
   showSearchDropdown,
@@ -85,9 +87,15 @@ export function useKeyboardShortcuts({
         return;
       }
 
-      // Ctrl/Cmd + I: Show info for current tab (if it has a layout)
+      // Ctrl/Cmd + I: Toggle info for current tab (if it has a layout)
       if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
         e.preventDefault();
+        // If info modal is open, close it
+        if (isInfoModalOpen) {
+          setShowInfoModal(false);
+          return;
+        }
+        // Otherwise, open it for the current tab (if it has a layout)
         const currentTab = tabs.find((t) => t.id === activeTabId);
         if (currentTab && currentTab.layoutId) {
           showInfo(currentTab);
@@ -116,10 +124,7 @@ export function useKeyboardShortcuts({
       }
 
       // F1 or ? (without modifiers): Open help modal
-      if (
-        e.key === 'F1' ||
-        (e.key === '?' && !e.ctrlKey && !e.metaKey && !isInInput)
-      ) {
+      if (e.key === 'F1' || (e.key === '?' && !e.ctrlKey && !e.metaKey && !isInInput)) {
         e.preventDefault();
         setShowHelpModal(true);
         return;
@@ -127,13 +132,7 @@ export function useKeyboardShortcuts({
 
       // Tab key (without modifiers): Focus search bar
       // Only if search bar is visible, we're not already in an input, and dropdown is not showing
-      if (
-        e.key === 'Tab' &&
-        !e.shiftKey &&
-        !e.ctrlKey &&
-        !e.metaKey &&
-        !e.altKey
-      ) {
+      if (e.key === 'Tab' && !e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
         // Don't intercept Tab if dropdown is visible (handled by search keydown)
         if (showSearchDropdown) return;
 
@@ -157,6 +156,8 @@ export function useKeyboardShortcuts({
     unlockTab,
     startRename,
     showInfo,
+    isInfoModalOpen,
+    setShowInfoModal,
     searchInputRef,
     shouldShowSearchBar,
     showSearchDropdown,

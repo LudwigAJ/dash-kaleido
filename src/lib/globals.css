@@ -6,8 +6,8 @@
  * and map them to Tailwind's color system.
  */
 
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 /* 
  * Source paths for Tailwind to scan for class usage.
@@ -45,18 +45,18 @@
   --color-border: var(--kaleido-border);
   --color-input: var(--kaleido-input);
   --color-ring: var(--kaleido-primary);
-  
+
   /* Additional custom colors */
   --color-surface: var(--kaleido-surface);
   --color-surface-foreground: var(--kaleido-surface-foreground);
   --color-surface-dim: var(--kaleido-surface-dim);
   --color-tertiary: var(--kaleido-tertiary);
-  
+
   /* Border radius */
   --radius-sm: var(--kaleido-radius-sm);
   --radius-md: var(--kaleido-radius-md);
   --radius-lg: var(--kaleido-radius-lg);
-  
+
   /* Shadows */
   --shadow-sm: var(--kaleido-shadow-sm);
   --shadow-md: var(--kaleido-shadow-md);

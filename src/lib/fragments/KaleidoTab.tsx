@@ -1,12 +1,12 @@
 import React from 'react';
-import type { DashId, SetProps, LoadingState } from '@/types';
+import type { SetProps, LoadingState } from '@/types';
 
 export interface KaleidoTabProps {
   /**
    * The ID used to identify this component in Dash callbacks.
    * Should be a pattern-matching ID like {type: 'kaleido-tab-content', index: '<tab-uuid>'}.
    */
-  id: DashId;
+  id: string;
 
   /**
    * The content to render inside this tab.
@@ -46,14 +46,7 @@ export interface KaleidoTabProps {
  * visibility toggling based on the active tab.
  */
 const KaleidoTab: React.FC<KaleidoTabProps> = (props) => {
-  const {
-    id,
-    children,
-    style = {},
-    className = '',
-    loading_state,
-    ...otherProps
-  } = props;
+  const { id, children, style = {}, className = '', loading_state, ...otherProps } = props;
 
   // Extract data-* attributes to pass to root element
   const dataAttributes = Object.keys(otherProps)

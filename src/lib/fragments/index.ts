@@ -24,16 +24,18 @@ export { default as SearchBar } from './KaleidoManager/SearchBar';
 export { default as KaleidoSearchBar } from './KaleidoManager/SearchBar';
 
 // Modals
-export { HelpModal, InfoModal, KaleidoModal, KaleidoModalRow, KaleidoModalSection, KaleidoModalKeyboardShortcut } from './modals';
+export {
+  HelpModal,
+  InfoModal,
+  KaleidoModal,
+  KaleidoModalRow,
+  KaleidoModalSection,
+  KaleidoModalKeyboardShortcut,
+} from './modals';
 
 // KaleidoManager sub-components (from KaleidoManager folder)
 export { NotificationArea, TabOverlay, SortableTab } from './KaleidoManager';
-export {
-  TabBar,
-  StatusBar,
-  NewTabContent,
-  LayoutCard,
-} from './KaleidoManager';
+export { TabBar, StatusBar, NewTabContent, LayoutCard } from './KaleidoManager';
 
 // Context
 export { KaleidoContext, KaleidoProvider, useKaleido } from './KaleidoManager/context';
@@ -43,11 +45,23 @@ export type { DashKaleidoProps } from './DashKaleido';
 export type { KaleidoManagerProps, SearchBarConfig } from './KaleidoManager/KaleidoManager';
 export type { KaleidoTabProps } from './KaleidoTab';
 export type { KaleidoSearchBarProps, SearchBarMode } from './KaleidoManager/SearchBar';
-export type { InfoModalProps, HelpModalProps, KaleidoModalProps, KaleidoModalRowProps, KaleidoModalSectionProps, KaleidoModalKeyboardShortcutProps } from './modals';
+export type {
+  InfoModalProps,
+  HelpModalProps,
+  KaleidoModalProps,
+  KaleidoModalRowProps,
+  KaleidoModalSectionProps,
+  KaleidoModalKeyboardShortcutProps,
+} from './modals';
 export type { NotificationAreaProps } from './KaleidoManager/NotificationArea';
 export type { TabOverlayProps } from './KaleidoManager/TabOverlay';
 export type { SortableTabProps, ContextMenuAction } from './KaleidoManager/SortableTab';
-export type { KaleidoContextValue, KaleidoTheme, KaleidoSize, KaleidoProviderProps } from './KaleidoManager/context';
+export type {
+  KaleidoContextValue,
+  KaleidoTheme,
+  KaleidoSize,
+  KaleidoProviderProps,
+} from './KaleidoManager/context';
 export type {
   TabBarProps,
   StatusBarProps,

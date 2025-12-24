@@ -20,8 +20,7 @@ const baseStyles = [
 ].join(' ');
 
 const variantStyles = {
-  default:
-    'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 active:bg-primary/80',
+  default: 'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 active:bg-primary/80',
   destructive:
     'bg-destructive text-white shadow-sm hover:bg-destructive/90 active:bg-destructive/80',
   outline:
@@ -43,8 +42,7 @@ const sizeStyles = {
 export type ButtonVariant = keyof typeof variantStyles;
 export type ButtonSize = keyof typeof sizeStyles;
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   asChild?: boolean;

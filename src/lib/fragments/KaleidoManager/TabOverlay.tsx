@@ -17,7 +17,9 @@ const TabOverlay: React.FC<TabOverlayProps> = ({ tab }) => {
 
   return (
     <div className="inline-flex items-center gap-2 px-3 py-1.5 border border-border bg-background text-foreground text-xs shadow-lg">
-      <span className="truncate max-w-32">{tab.name}</span>
+      <span className="whitespace-nowrap">
+        {tab.name.length > 24 ? `${tab.name.slice(0, 24)}…` : tab.name}
+      </span>
     </div>
   );
 };

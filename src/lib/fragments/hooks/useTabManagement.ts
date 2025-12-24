@@ -1,9 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import type { Tab } from '@/types';
-import type {
-  UseTabManagementOptions,
-  UseTabManagementReturn,
-} from './types';
+import type { UseTabManagementOptions, UseTabManagementReturn } from './types';
 
 /**
  * useTabManagement - Custom hook for tab CRUD operations
@@ -62,9 +59,7 @@ export function useTabManagement({
   });
 
   // Initialize active tab - restore from persisted tabs or use first tab
-  const [activeTabId, setActiveTabId] = useState<string | null>(
-    () => tabs[0]?.id || null
-  );
+  const [activeTabId, setActiveTabId] = useState<string | null>(() => tabs[0]?.id || null);
 
   // Inline rename state
   const [editingTabId, setEditingTabId] = useState<string | null>(null);
@@ -162,9 +157,7 @@ export function useTabManagement({
 
   // Rename a tab
   const renameTab = useCallback((tabId: string, newName: string) => {
-    setTabs((prevTabs) =>
-      prevTabs.map((t) => (t.id === tabId ? { ...t, name: newName } : t))
-    );
+    setTabs((prevTabs) => prevTabs.map((t) => (t.id === tabId ? { ...t, name: newName } : t)));
   }, []);
 
   // Lock a tab (only if it has a layout)
@@ -181,37 +174,36 @@ export function useTabManagement({
 
   // Unlock a tab
   const unlockTab = useCallback((tabId: string) => {
-    setTabs((prevTabs) =>
-      prevTabs.map((t) => (t.id === tabId ? { ...t, locked: false } : t))
-    );
+    setTabs((prevTabs) => prevTabs.map((t) => (t.id === tabId ? { ...t, locked: false } : t)));
   }, []);
 
   // Pin or unpin a tab
   const pinTab = useCallback((tabId: string, pinned: boolean) => {
-    setTabs((prevTabs) =>
-      prevTabs.map((t) => (t.id === tabId ? { ...t, pinned } : t))
-    );
+    setTabs((prevTabs) => prevTabs.map((t) => (t.id === tabId ? { ...t, pinned } : t)));
   }, []);
 
   // Duplicate a tab
-  const duplicateTab = useCallback((tabId: string) => {
-    setTabs((prevTabs) => {
-      const tab = prevTabs.find((t) => t.id === tabId);
-      if (!tab) return prevTabs;
-      const newTab: Tab = {
-        ...tab,
-        id: generateUUID(),
-        name: `${tab.name} (copy)`,
-        locked: false,
-        pinned: false,
-        createdAt: Date.now(),
-      };
-      const index = prevTabs.findIndex((t) => t.id === tabId);
-      const newTabs = [...prevTabs];
-      newTabs.splice(index + 1, 0, newTab);
-      return newTabs;
-    });
-  }, [generateUUID]);
+  const duplicateTab = useCallback(
+    (tabId: string) => {
+      setTabs((prevTabs) => {
+        const tab = prevTabs.find((t) => t.id === tabId);
+        if (!tab) return prevTabs;
+        const newTab: Tab = {
+          ...tab,
+          id: generateUUID(),
+          name: `${tab.name} (copy)`,
+          locked: false,
+          pinned: false,
+          createdAt: Date.now(),
+        };
+        const index = prevTabs.findIndex((t) => t.id === tabId);
+        const newTabs = [...prevTabs];
+        newTabs.splice(index + 1, 0, newTab);
+        return newTabs;
+      });
+    },
+    [generateUUID]
+  );
 
   // Start inline rename
   const startRename = useCallback((tab: Tab) => {
@@ -228,9 +220,7 @@ export function useTabManagement({
     const tabName = editingTabNameRef.current;
     if (tabId && tabName.trim()) {
       setTabs((prevTabs) =>
-        prevTabs.map((t) =>
-          t.id === tabId ? { ...t, name: tabName.trim() } : t
-        )
+        prevTabs.map((t) => (t.id === tabId ? { ...t, name: tabName.trim() } : t))
       );
     }
     editingTabIdRef.current = null;
@@ -248,14 +238,11 @@ export function useTabManagement({
   }, []);
 
   // Handle rename input change
-  const handleRenameInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setEditingTabName(value);
-      editingTabNameRef.current = value;
-    },
-    []
-  );
+  const handleRenameInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEditingTabName(value);
+    editingTabNameRef.current = value;
+  }, []);
 
   // Handle rename blur with setTimeout to ensure we have the latest ref values
   const handleRenameBlur = useCallback(() => {
@@ -264,9 +251,7 @@ export function useTabManagement({
       const tabName = editingTabNameRef.current;
       if (tabId && tabName.trim()) {
         setTabs((prevTabs) =>
-          prevTabs.map((t) =>
-            t.id === tabId ? { ...t, name: tabName.trim() } : t
-          )
+          prevTabs.map((t) => (t.id === tabId ? { ...t, name: tabName.trim() } : t))
         );
       }
       editingTabIdRef.current = null;
@@ -274,6 +259,30 @@ export function useTabManagement({
       setEditingTabId(null);
       setEditingTabName('');
     }, 0);
+  }, []);
+
+  // Handle rename key down - Enter to finish, Escape to cancel
+  const handleRenameKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const tabId = editingTabIdRef.current;
+      const tabName = editingTabNameRef.current;
+      if (tabId && tabName.trim()) {
+        setTabs((prevTabs) =>
+          prevTabs.map((t) => (t.id === tabId ? { ...t, name: tabName.trim() } : t))
+        );
+      }
+      editingTabIdRef.current = null;
+      editingTabNameRef.current = '';
+      setEditingTabId(null);
+      setEditingTabName('');
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      editingTabIdRef.current = null;
+      editingTabNameRef.current = '';
+      setEditingTabId(null);
+      setEditingTabName('');
+    }
   }, []);
 
   // Update a tab's layout
@@ -293,8 +302,7 @@ export function useTabManagement({
                 name: layoutName,
                 layoutId: layoutId,
                 layoutParams: layoutParams || undefined,
-                layoutParamOptionKey:
-                  layoutParamOptionKey || undefined,
+                layoutParamOptionKey: layoutParamOptionKey || undefined,
               }
             : tab
         )
@@ -334,6 +342,7 @@ export function useTabManagement({
     cancelRename,
     handleRenameInputChange,
     handleRenameBlur,
+    handleRenameKeyDown,
   };
 }
 

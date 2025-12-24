@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import './KaleidoManager.css';
 import SearchBar from './SearchBar';
 
@@ -15,6 +9,9 @@ import NotificationArea from './NotificationArea';
 
 // Modular components
 import { TabBar, StatusBar, NewTabContent, LayoutWithIdProps } from './components';
+
+// Context
+import { KaleidoProvider } from './context';
 
 // Custom hooks
 import {
@@ -28,6 +25,9 @@ import {
 // Utilities
 import { defaultSearchBarConfig, generateUUID } from '../utils';
 
+// Version
+import { VERSION } from '../../version';
+
 // UI Components
 import { Spinner } from '@/components/ui';
 
@@ -37,7 +37,6 @@ import type {
   LayoutMetadata,
   LayoutParameter,
   Notification,
-  DashId,
   SetProps,
   LoadingState,
 } from '@/types';
@@ -53,7 +52,7 @@ export interface SearchBarConfig {
 }
 
 export interface KaleidoManagerProps {
-  id: DashId;
+  id: string;
   style?: React.CSSProperties;
   registeredLayouts?: Record<string, LayoutMetadata>;
   displayedLayouts?: string[] | null;
@@ -127,29 +126,23 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
 
   // ========== NOTIFICATION STATE ==========
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [showNotificationHistory, setShowNotificationHistory] =
-    useState<boolean>(false);
+  const [showNotificationHistory, setShowNotificationHistory] = useState<boolean>(false);
 
-  const addNotification = useCallback(
-    (type: Notification['type'], message: string) => {
-      const notification: Notification = {
-        id: Date.now() + Math.random(),
-        type,
-        message,
-        timestamp: Date.now(),
-      };
-      setNotifications((prev) => [...prev, notification]);
+  const addNotification = useCallback((type: Notification['type'], message: string) => {
+    const notification: Notification = {
+      id: Date.now() + Math.random(),
+      type,
+      message,
+      timestamp: Date.now(),
+    };
+    setNotifications((prev) => [...prev, notification]);
 
-      if (type === 'success') {
-        setTimeout(() => {
-          setNotifications((prev) =>
-            prev.filter((n) => n.id !== notification.id)
-          );
-        }, 3000);
-      }
-    },
-    []
-  );
+    if (type === 'success') {
+      setTimeout(() => {
+        setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
+      }, 3000);
+    }
+  }, []);
 
   // ========== LAYOUT SELECTION HOOK ==========
   const layoutSelection = useLayoutSelection({
@@ -217,8 +210,7 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
       if (layoutMeta?.allowMultiple) return false;
       // Disabled if any OTHER tab has this layout
       return tabManagement.tabs.some(
-        (tab) =>
-          tab.layoutId === layoutId && tab.id !== tabManagement.activeTabId
+        (tab) => tab.layoutId === layoutId && tab.id !== tabManagement.activeTabId
       );
     },
     [registeredLayouts, tabManagement.tabs, tabManagement.activeTabId]
@@ -242,6 +234,8 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
     unlockTab: (tabId: string) => tabManagement.unlockTab(tabId),
     startRename: tabManagement.startRename,
     showInfo: handleInfo,
+    isInfoModalOpen: showInfoModal,
+    setShowInfoModal,
     searchInputRef: layoutSelection.searchInputRef,
     shouldShowSearchBar: !!shouldShowSearchBar,
     showSearchDropdown: layoutSelection.showSearchDropdown,
@@ -314,9 +308,7 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
 
     // Save state from previous tab if it was a "New Tab" (no layout)
     if (previousTabId) {
-      const previousTab = tabManagement.tabs.find(
-        (t) => t.id === previousTabId
-      );
+      const previousTab = tabManagement.tabs.find((t) => t.id === previousTabId);
       if (previousTab && !previousTab.layoutId) {
         layoutSelection.saveStateToCache(previousTabId);
       }
@@ -374,8 +366,7 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
           try {
             const parsed = JSON.parse(childId);
             tabId =
-              typeof parsed.index === 'string' &&
-              parsed.index.includes(':')
+              typeof parsed.index === 'string' && parsed.index.includes(':')
                 ? parsed.index.split(':')[0]
                 : parsed.index;
           } catch {
@@ -407,8 +398,7 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
       };
     }
     if (layoutSelection.isCollectingParams) {
-      const currentParam =
-        layoutSelection.pendingParams[layoutSelection.currentParamIndex];
+      const currentParam = layoutSelection.pendingParams[layoutSelection.currentParamIndex];
       return {
         name: `Param (${currentParam?.name || '...'})`,
         description: `Entering value for parameter '${currentParam?.name || '...'}'`,
@@ -438,13 +428,8 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
       if (params.length > 0) {
         layoutSelection.startParamCollection(layoutId);
       } else {
-        const layoutName =
-          registeredLayouts[layoutId]?.name || 'Untitled';
-        tabManagement.updateTabLayout(
-          tabManagement.activeTabId!,
-          layoutId,
-          layoutName
-        );
+        const layoutName = registeredLayouts[layoutId]?.name || 'Untitled';
+        tabManagement.updateTabLayout(tabManagement.activeTabId!, layoutId, layoutName);
         layoutSelection.resetLayoutSelection();
       }
     },
@@ -453,11 +438,7 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
 
   // Handle applying layout with params
   const handleApplyLayoutToTab = useCallback(
-    (
-      layoutId: string,
-      params: Record<string, string> = {},
-      optionKey: string | null = null
-    ) => {
+    (layoutId: string, params: Record<string, string> = {}, optionKey: string | null = null) => {
       const layoutName = registeredLayouts[layoutId]?.name || 'Untitled';
 
       if (Object.keys(params).length > 0 || optionKey) {
@@ -529,9 +510,7 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
         } catch {
           fullIndex = childId;
           tabId =
-            typeof childId === 'string' && childId.includes(':')
-              ? childId.split(':')[0]
-              : childId;
+            typeof childId === 'string' && childId.includes(':') ? childId.split(':')[0] : childId;
         }
       }
 
@@ -606,10 +585,7 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
             }}
           >
             <div
-              className={[
-                'flex flex-col items-center gap-4',
-                'text-secondary',
-              ]
+              className={['flex flex-col items-center gap-4', 'text-secondary']
                 .filter(Boolean)
                 .join(' ')}
             >
@@ -644,20 +620,15 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
     const useDropdown = !isNewTab || searchBarConfig.showDropdownInNewTab;
 
     // Determine search bar mode
-    let searchBarMode: 'search' | 'loading' | 'paramOptions' | 'params' | 'display' =
-      'search';
+    let searchBarMode: 'search' | 'loading' | 'paramOptions' | 'params' | 'display' = 'search';
     if (layoutSelection.loadingLayoutInfo) {
       searchBarMode = 'loading';
-    } else if (
-      layoutSelection.showParamOptionsDropdown &&
-      layoutSelection.pendingLayout
-    ) {
+    } else if (layoutSelection.showParamOptionsDropdown && layoutSelection.pendingLayout) {
       searchBarMode = 'paramOptions';
     } else if (layoutSelection.isCollectingParams) {
       searchBarMode = 'params';
     } else if (!isNewTab && !layoutSelection.isEditingSearch && !isTabLocked) {
-      const currentLayoutInfo =
-        layoutSelection.getCurrentLayoutDisplayInfo(activeTab);
+      const currentLayoutInfo = layoutSelection.getCurrentLayoutDisplayInfo(activeTab);
       if (currentLayoutInfo) {
         searchBarMode = 'display';
       }
@@ -678,14 +649,10 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
         onSelectedIndexChange={layoutSelection.setSelectedLayoutIndex}
         isKeyboardNavigating={layoutSelection.isKeyboardNavigating}
         onKeyboardNavigatingChange={layoutSelection.setIsKeyboardNavigating}
-        currentLayoutInfo={layoutSelection.getCurrentLayoutDisplayInfo(
-          activeTab
-        )}
+        currentLayoutInfo={layoutSelection.getCurrentLayoutDisplayInfo(activeTab)}
         isTabLocked={isTabLocked}
         pendingLayout={layoutSelection.pendingLayout}
-        pendingLayoutName={
-          registeredLayouts[layoutSelection.pendingLayout || '']?.name || ''
-        }
+        pendingLayoutName={registeredLayouts[layoutSelection.pendingLayout || '']?.name || ''}
         pendingParams={layoutSelection.pendingParams}
         currentParamIndex={layoutSelection.currentParamIndex}
         paramInputValue={layoutSelection.paramInputValue}
@@ -694,9 +661,7 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
         onShowingDefaultChange={layoutSelection.setShowingDefault}
         paramOptions={layoutSelection.paramOptions}
         selectedParamOptionIndex={layoutSelection.selectedParamOptionIndex}
-        onParamOptionIndexChange={
-          layoutSelection.setSelectedParamOptionIndex
-        }
+        onParamOptionIndexChange={layoutSelection.setSelectedParamOptionIndex}
         loadingLayoutInfo={layoutSelection.loadingLayoutInfo}
         registeredLayouts={registeredLayouts}
         onLayoutSelect={handleSelectLayout}
@@ -708,40 +673,27 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
           }
         }}
         onParamAdvance={() => {
-          const currentParam =
-            layoutSelection.pendingParams[layoutSelection.currentParamIndex];
+          const currentParam = layoutSelection.pendingParams[layoutSelection.currentParamIndex];
           const valueToSave =
             layoutSelection.paramInputValue ||
-            (currentParam?.hasDefault
-              ? String(currentParam.default)
-              : '');
+            (currentParam?.hasDefault ? String(currentParam.default) : '');
 
           const newValues = {
             ...layoutSelection.parameterValues,
             [currentParam.name]: valueToSave,
           };
 
-          if (
-            layoutSelection.currentParamIndex <
-            layoutSelection.pendingParams.length - 1
-          ) {
+          if (layoutSelection.currentParamIndex < layoutSelection.pendingParams.length - 1) {
             layoutSelection.advanceToNextParam();
           } else {
-            handleApplyLayoutToTab(
-              layoutSelection.pendingLayout!,
-              newValues
-            );
+            handleApplyLayoutToTab(layoutSelection.pendingLayout!, newValues);
           }
         }}
         onParamCancel={layoutSelection.cancelParamCollection}
         onParamOptionSelect={(key: string) => {
           const option = layoutSelection.paramOptions[key];
           if (option) {
-            handleApplyLayoutToTab(
-              layoutSelection.pendingLayout!,
-              option.params || {},
-              key
-            );
+            handleApplyLayoutToTab(layoutSelection.pendingLayout!, option.params || {}, key);
           }
         }}
         onEditingStart={() => layoutSelection.setIsEditingSearch(true)}
@@ -761,104 +713,103 @@ const KaleidoManager: React.FC<KaleidoManagerProps> = (props) => {
   const idString = typeof id === 'object' ? JSON.stringify(id) : id;
 
   return (
-    <div
-      id={idString}
-      className={[
-        'kaleido-container flex flex-col h-full w-full',
-        `kaleido-theme-${theme} kaleido-size-${size}`,
-        isDashLoading && 'opacity-50 pointer-events-none',
-      ]
-        .filter(Boolean)
-        .join(' ')}
-      style={style}
-      data-dash-is-loading={isDashLoading || undefined}
-      {...dataAttributes}
-    >
-      {/* Search Bar - top position */}
-      {searchBarConfig.position === 'top' && renderSearchBar()}
+    <KaleidoProvider theme={theme} size={size} registeredLayouts={registeredLayouts}>
+      <div
+        id={idString}
+        className={[
+          'kaleido-container flex flex-col h-full w-full',
+          `kaleido-theme-${theme} kaleido-size-${size}`,
+          isDashLoading && 'opacity-50 pointer-events-none',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        style={style}
+        data-dash-is-loading={isDashLoading || undefined}
+        {...dataAttributes}
+      >
+        {/* Search Bar - top position */}
+        {searchBarConfig.position === 'top' && renderSearchBar()}
 
-      {/* Tab Bar */}
-      <TabBar
-        tabs={tabManagement.tabs}
-        activeTabId={tabManagement.activeTabId}
-        registeredLayouts={registeredLayouts}
-        canCloseTabs={true}
-        showContextMenu={true}
-        tabBarRef={tabBarRef}
-        onTabClick={tabManagement.selectTab}
-        onTabClose={tabManagement.removeTab}
-        onTabRename={(tabId: string, newName: string) => {
-          // Find the tab and rename it
-          const tab = tabManagement.tabs.find((t) => t.id === tabId);
-          if (tab) {
-            tabManagement.renameTab(tabId, newName);
-          }
-        }}
-        onTabLock={(tabId: string, locked: boolean) => {
-          if (locked) {
-            tabManagement.lockTab(tabId);
-          } else {
-            tabManagement.unlockTab(tabId);
-          }
-        }}
-        onTabPin={(tabId: string, pinned: boolean) => {
-          tabManagement.pinTab(tabId, pinned);
-        }}
-        onTabDuplicate={(tabId: string) => {
-          tabManagement.duplicateTab(tabId);
-        }}
-        onTabInfo={handleInfo}
-        onTabsReorder={tabManagement.setTabs}
-        onNewTab={tabManagement.addTab}
-        onShowHelp={() => setShowHelpModal(true)}
-        maxTabs={maxTabs}
-      />
+        {/* Tab Bar */}
+        <TabBar
+          tabs={tabManagement.tabs}
+          activeTabId={tabManagement.activeTabId}
+          registeredLayouts={registeredLayouts}
+          canCloseTabs={true}
+          showContextMenu={true}
+          tabBarRef={tabBarRef}
+          theme={theme}
+          editingTabId={tabManagement.editingTabId}
+          editingTabName={tabManagement.editingTabName}
+          renameInputRef={tabManagement.renameInputRef}
+          onTabClick={tabManagement.selectTab}
+          onTabClose={tabManagement.removeTab}
+          onTabStartRename={tabManagement.startRename}
+          onTabRenameChange={tabManagement.handleRenameInputChange}
+          onTabRenameBlur={tabManagement.handleRenameBlur}
+          onTabRenameKeyDown={tabManagement.handleRenameKeyDown}
+          onTabLock={(tabId: string, locked: boolean) => {
+            if (locked) {
+              tabManagement.lockTab(tabId);
+            } else {
+              tabManagement.unlockTab(tabId);
+            }
+          }}
+          onTabPin={(tabId: string, pinned: boolean) => {
+            tabManagement.pinTab(tabId, pinned);
+          }}
+          onTabDuplicate={(tabId: string) => {
+            tabManagement.duplicateTab(tabId);
+          }}
+          onTabInfo={handleInfo}
+          onTabShare={shareLinks.shareTab}
+          onTabsReorder={tabManagement.setTabs}
+          onNewTab={tabManagement.addTab}
+          onShowHelp={() => setShowHelpModal(true)}
+          maxTabs={maxTabs}
+        />
 
-      {/* Search Bar - under position (default) */}
-      {searchBarConfig.position === 'under' && renderSearchBar()}
+        {/* Search Bar - under position (default) */}
+        {searchBarConfig.position === 'under' && renderSearchBar()}
 
-      {/* Tab Content */}
-      <div className="flex-1 overflow-auto bg-background">
-        {renderAllTabs()}
+        {/* Tab Content */}
+        <div className="flex-1 overflow-auto bg-background">{renderAllTabs()}</div>
+
+        {/* Search Bar - bottom position */}
+        {searchBarConfig.position === 'bottom' && renderSearchBar()}
+
+        {/* Status Bar */}
+        <StatusBar
+          enabled={enableStatusBar}
+          tabs={tabManagement.tabs}
+          activeTab={activeTab}
+          registeredLayouts={registeredLayouts}
+          maxTabs={maxTabs}
+          lastSyncTime={dashSync.lastSyncTime}
+          currentMode={getCurrentMode()}
+          searchInputRef={layoutSelection.searchInputRef}
+          theme={theme}
+          notifications={notifications}
+          setNotifications={setNotifications}
+          showNotificationHistory={showNotificationHistory}
+          setShowNotificationHistory={setShowNotificationHistory}
+        />
+
+        {/* Info Modal */}
+        <InfoModal open={showInfoModal} onOpenChange={setShowInfoModal} tab={modalTab} />
+
+        {/* Help Modal */}
+        <HelpModal open={showHelpModal} onOpenChange={setShowHelpModal} version={VERSION} />
+
+        {/* Notification Area */}
+        <NotificationArea
+          notifications={notifications}
+          setNotifications={setNotifications}
+          showHistory={showNotificationHistory}
+          setShowHistory={setShowNotificationHistory}
+        />
       </div>
-
-      {/* Search Bar - bottom position */}
-      {searchBarConfig.position === 'bottom' && renderSearchBar()}
-
-      {/* Status Bar */}
-      <StatusBar
-        enabled={enableStatusBar}
-        tabs={tabManagement.tabs}
-        activeTab={activeTab}
-        registeredLayouts={registeredLayouts}
-        maxTabs={maxTabs}
-        lastSyncTime={dashSync.lastSyncTime}
-        currentMode={getCurrentMode()}
-        searchInputRef={layoutSelection.searchInputRef}
-        notifications={notifications}
-        setNotifications={setNotifications}
-        showNotificationHistory={showNotificationHistory}
-        setShowNotificationHistory={setShowNotificationHistory}
-      />
-
-      {/* Info Modal */}
-      <InfoModal open={showInfoModal} onOpenChange={setShowInfoModal} tab={modalTab} />
-
-      {/* Help Modal */}
-      <HelpModal
-        open={showHelpModal}
-        onOpenChange={setShowHelpModal}
-        version="0.0.1"
-      />
-
-      {/* Notification Area */}
-      <NotificationArea
-        notifications={notifications}
-        setNotifications={setNotifications}
-        showHistory={showNotificationHistory}
-        setShowHistory={setShowNotificationHistory}
-      />
-    </div>
+    </KaleidoProvider>
   );
 };
 

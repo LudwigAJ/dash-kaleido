@@ -15,12 +15,7 @@ export { default as SortableTab } from './SortableTab';
 export { default as SearchBar } from './SearchBar';
 
 // Components subfolder
-export {
-  TabBar,
-  StatusBar,
-  NewTabContent,
-  LayoutCard,
-} from './components';
+export { TabBar, StatusBar, NewTabContent, LayoutCard } from './components';
 
 // Context
 export { KaleidoContext, KaleidoProvider, useKaleido } from './context';
@@ -38,4 +33,9 @@ export type {
   LayoutCardProps,
   LayoutWithIdProps,
 } from './components';
-export type { KaleidoContextValue, KaleidoTheme, KaleidoSize, KaleidoProviderProps } from './context';
+export type {
+  KaleidoContextValue,
+  KaleidoTheme,
+  KaleidoSize,
+  KaleidoProviderProps,
+} from './context';

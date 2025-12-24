@@ -89,11 +89,7 @@ export const KaleidoProvider: React.FC<KaleidoProviderProps> = ({
     [theme, size, registeredLayouts]
   );
 
-  return (
-    <KaleidoContext.Provider value={value}>
-      {children}
-    </KaleidoContext.Provider>
-  );
+  return <KaleidoContext.Provider value={value}>{children}</KaleidoContext.Provider>;
 };
 
 KaleidoProvider.displayName = 'KaleidoProvider';
