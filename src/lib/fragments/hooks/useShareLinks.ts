@@ -1,10 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import type { Tab } from '@/types';
-import type {
-  UseShareLinksOptions,
-  UseShareLinksReturn,
-  ShareData,
-} from './types';
+import type { UseShareLinksOptions, UseShareLinksReturn, ShareData } from './types';
 
 /**
  * useShareLinks - URL hash-based tab sharing system
@@ -28,32 +24,26 @@ export function useShareLinks({
   addNotification,
 }: UseShareLinksOptions): UseShareLinksReturn {
   // Generate share link for a tab
-  const generateShareLink = useCallback(
-    (tab: Tab): string | null => {
-      if (!tab.layoutId) return null;
+  const generateShareLink = useCallback((tab: Tab): string | null => {
+    if (!tab.layoutId) return null;
 
-      const shareData: ShareData = {
-        layoutId: tab.layoutId,
-        name: tab.name,
-      };
+    const shareData: ShareData = {
+      layoutId: tab.layoutId,
+      name: tab.name,
+    };
 
-      // Include params if present
-      if (tab.layoutParams) {
-        shareData.layoutParams = tab.layoutParams as Record<
-          string,
-          string
-        >;
-      }
-      if (tab.layoutParamOptionKey) {
-        shareData.layoutParamOptionKey = tab.layoutParamOptionKey;
-      }
+    // Include params if present
+    if (tab.layoutParams) {
+      shareData.layoutParams = tab.layoutParams as Record<string, string>;
+    }
+    if (tab.layoutParamOptionKey) {
+      shareData.layoutParamOptionKey = tab.layoutParamOptionKey;
+    }
 
-      const encoded = btoa(JSON.stringify(shareData));
-      const currentUrl = window.location.href.split('#')[0];
-      return `${currentUrl}#k:${encoded}`;
-    },
-    []
-  );
+    const encoded = btoa(JSON.stringify(shareData));
+    const currentUrl = window.location.href.split('#')[0];
+    return `${currentUrl}#k:${encoded}`;
+  }, []);
 
   // Copy share link to clipboard
   const shareTab = useCallback(
@@ -73,10 +63,7 @@ export function useShareLinks({
             addNotification?.('success', 'Link copied to clipboard');
           })
           .catch(() => {
-            addNotification?.(
-              'error',
-              'Failed to copy link to clipboard'
-            );
+            addNotification?.('error', 'Failed to copy link to clipboard');
           });
       }
     },
@@ -86,15 +73,11 @@ export function useShareLinks({
   // Spawn a shared tab from decoded data
   const spawnSharedTab = useCallback(
     (shareData: ShareData): boolean => {
-      const { layoutId, name, layoutParams, layoutParamOptionKey } =
-        shareData;
+      const { layoutId, name, layoutParams, layoutParamOptionKey } = shareData;
 
       // Validate layout exists
       if (!registeredLayouts || !registeredLayouts[layoutId]) {
-        addNotification?.(
-          'error',
-          `Layout "${layoutId}" does not exist`
-        );
+        addNotification?.('error', `Layout "${layoutId}" does not exist`);
         return false;
       }
 
@@ -115,10 +98,7 @@ export function useShareLinks({
 
       // Check maxTabs limit
       if (maxTabs && maxTabs > 0 && tabs.length >= maxTabs) {
-        addNotification?.(
-          'error',
-          `Cannot open shared tab: maximum tabs (${maxTabs}) reached`
-        );
+        addNotification?.('error', `Cannot open shared tab: maximum tabs (${maxTabs}) reached`);
         return false;
       }
 
@@ -138,15 +118,7 @@ export function useShareLinks({
 
       return true;
     },
-    [
-      registeredLayouts,
-      tabs,
-      maxTabs,
-      generateUUID,
-      setTabs,
-      setActiveTabId,
-      addNotification,
-    ]
+    [registeredLayouts, tabs, maxTabs, generateUUID, setTabs, setActiveTabId, addNotification]
   );
 
   // Process URL hash for shared tabs
@@ -171,11 +143,7 @@ export function useShareLinks({
     } finally {
       // Clear the hash from URL
       if (window.history.replaceState) {
-        window.history.replaceState(
-          null,
-          '',
-          window.location.pathname + window.location.search
-        );
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
       } else {
         window.location.hash = '';
       }

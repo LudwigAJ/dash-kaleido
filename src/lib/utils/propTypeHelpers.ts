@@ -70,9 +70,7 @@ export const layoutMetadataPropType = PropTypes.shape({
 /**
  * PropType for registered layouts object
  */
-export const registeredLayoutsPropType = PropTypes.objectOf(
-  layoutMetadataPropType
-);
+export const registeredLayoutsPropType = PropTypes.objectOf(layoutMetadataPropType);
 
 /**
  * PropType for search bar configuration
@@ -100,11 +98,7 @@ export const sizePropType = PropTypes.oneOf(['sm', 'md', 'lg']);
  * PropType for persistence props
  */
 export const persistencePropTypes = {
-  persistence: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.string,
-    PropTypes.number,
-  ]),
+  persistence: PropTypes.oneOfType([PropTypes.bool, PropTypes.string, PropTypes.number]),
   persisted_props: PropTypes.arrayOf(PropTypes.string),
   persistence_type: PropTypes.oneOf(['local', 'session', 'memory']),
 };

@@ -47,15 +47,11 @@ const InfoModal: React.FC<InfoModalProps> = ({ open, onOpenChange, tab }) => {
             </div>
             <div className={rowClass}>
               <span className={labelClass}>ID</span>
-              <span className="text-xs font-mono text-muted-foreground">
-                {tab.id}
-              </span>
+              <span className="text-xs font-mono text-muted-foreground">{tab.id}</span>
             </div>
             <div className={rowClass}>
               <span className={labelClass}>Created</span>
-              <span className={valueClass}>
-                {new Date(tab.createdAt).toLocaleString()}
-              </span>
+              <span className={valueClass}>{new Date(tab.createdAt).toLocaleString()}</span>
             </div>
             <div className={rowClass}>
               <span className={labelClass}>Layout</span>
@@ -63,9 +59,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ open, onOpenChange, tab }) => {
             </div>
             <div className={rowClass}>
               <span className={labelClass}>Locked</span>
-              <span className={valueClass}>
-                {tab.locked ? 'Yes' : 'No'}
-              </span>
+              <span className={valueClass}>{tab.locked ? 'Yes' : 'No'}</span>
             </div>
             {(tab.layoutParams || tab.layoutParamOptionKey) && (
               <div className={rowClass}>

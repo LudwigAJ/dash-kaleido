@@ -11,13 +11,13 @@ interface AppState {
 const App: React.FC = () => {
   const [state, setState] = useState<AppState>({ value: '', label: 'Type Here' });
   const setProps = (newProps: Partial<AppState>) => {
-  setState((prev) => ({ ...prev, ...newProps }));
+    setState((prev) => ({ ...prev, ...newProps }));
   };
 
   return (
-  <div>
-    <DashKaleido setProps={setProps} {...state} />
-  </div>
+    <div>
+      <DashKaleido setProps={setProps} {...state} />
+    </div>
   );
 };
 

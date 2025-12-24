@@ -43,8 +43,7 @@ const LayoutCard: React.FC<LayoutCardProps> = ({
         'p-5 cursor-pointer transition-all duration-200',
         'flex flex-col h-full',
         'hover:-translate-y-0.5 hover:shadow-md hover:border-primary/50',
-        isSelected &&
-          'ring-2 ring-primary ring-offset-2 ring-offset-background',
+        isSelected && 'ring-2 ring-primary ring-offset-2 ring-offset-background',
         isDisabled && 'opacity-50 cursor-not-allowed pointer-events-none',
       ]
         .filter(Boolean)
@@ -54,9 +53,7 @@ const LayoutCard: React.FC<LayoutCardProps> = ({
       <h3 className="text-base font-semibold mb-1.5 text-foreground leading-tight">
         {layout.name}
       </h3>
-      <p className="text-sm text-secondary leading-relaxed">
-        {layout.description}
-      </p>
+      <p className="text-sm text-secondary leading-relaxed">{layout.description}</p>
       {isDisabled && (
         <div
           className={[
@@ -79,10 +76,7 @@ const LayoutCard: React.FC<LayoutCardProps> = ({
   // Wrap with tooltip if disabled
   if (isDisabled) {
     return (
-      <Tooltip
-        content="This layout is already open in another tab"
-        delayDuration={400}
-      >
+      <Tooltip content="This layout is already open in another tab" delayDuration={400}>
         <div className="relative h-full">{cardContent}</div>
       </Tooltip>
     );

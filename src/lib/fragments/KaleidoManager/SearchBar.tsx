@@ -1,7 +1,12 @@
 import React, { useRef, useEffect } from 'react';
 import { Command } from 'cmdk';
 import type { LayoutMetadata, LayoutParameter } from '@/types';
-import type { LayoutDisplayInfo, LoadingLayoutInfo, LayoutWithId, ParameterOption } from '@/fragments/hooks/types';
+import type {
+  LayoutDisplayInfo,
+  LoadingLayoutInfo,
+  LayoutWithId,
+  ParameterOption,
+} from '@/fragments/hooks/types';
 
 export type SearchBarMode = 'display' | 'search' | 'params' | 'paramOptions' | 'loading';
 
@@ -161,10 +166,7 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
 
     const handleClickOutside = (e: MouseEvent) => {
       // Check if click is outside the search bar container
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         onDropdownVisibilityChange?.(false);
       }
     };
@@ -262,12 +264,7 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
 
   // Render loading state
   if (mode === 'loading' && loadingLayoutInfo) {
-    const {
-      layoutName,
-      params,
-      optionKey,
-      pendingParams: loadingParams,
-    } = loadingLayoutInfo;
+    const { layoutName, params, optionKey, pendingParams: loadingParams } = loadingLayoutInfo;
 
     return (
       <div className="kaleido-search-bar">
@@ -280,13 +277,9 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
             {loadingParams &&
               loadingParams.map((param, idx) => (
                 <React.Fragment key={param.name}>
-                  <span className="kaleido-search-prompt">
-                    ?{param.name}
-                  </span>
+                  <span className="kaleido-search-prompt">?{param.name}</span>
                   <span className="kaleido-param-separator">&gt;</span>
-                  <span className="kaleido-search-prompt">
-                    {params[param.name] || ''}
-                  </span>
+                  <span className="kaleido-search-prompt">{params[param.name] || ''}</span>
                   {idx < loadingParams.length - 1 && (
                     <span className="kaleido-param-separator">&gt;</span>
                   )}
@@ -301,8 +294,7 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
   // Render parameter collection mode
   if (mode === 'params' && pendingParams.length > 0) {
     const currentParam = pendingParams[currentParamIndex];
-    const hasDefault =
-      currentParam?.hasDefault && currentParam?.default !== null;
+    const hasDefault = currentParam?.hasDefault && currentParam?.default !== null;
 
     return (
       <div className="kaleido-search-bar">
@@ -323,17 +315,10 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
         <span className="kaleido-param-hint">
           {currentParamIndex + 1}/{pendingParams.length}
           {hasDefault && !paramInputValue && (
-            <span className="kaleido-param-default-hint">
-              {' '}
-              (Enter for default)
-            </span>
+            <span className="kaleido-param-default-hint"> (Enter for default)</span>
           )}
         </span>
-        <button
-          className="kaleido-param-cancel-btn"
-          onClick={onParamCancel}
-          title="Cancel (Esc)"
-        >
+        <button className="kaleido-param-cancel-btn" onClick={onParamCancel} title="Cancel (Esc)">
           ×
         </button>
       </div>
@@ -341,11 +326,7 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
   }
 
   // Render parameter options mode - using cmdk for keyboard navigation
-  if (
-    mode === 'paramOptions' &&
-    pendingLayout &&
-    Object.keys(paramOptions).length > 0
-  ) {
+  if (mode === 'paramOptions' && pendingLayout && Object.keys(paramOptions).length > 0) {
     const optionEntries = Object.entries(paramOptions);
 
     return (
@@ -353,11 +334,7 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
         <span className="kaleido-search-prompt">{pendingLayoutName}</span>
         <span className="kaleido-param-separator">&gt;</span>
         <div className="kaleido-param-options-spacer"></div>
-        <button
-          className="kaleido-param-cancel-btn"
-          onClick={onParamCancel}
-          title="Cancel (Esc)"
-        >
+        <button className="kaleido-param-cancel-btn" onClick={onParamCancel} title="Cancel (Esc)">
           ×
         </button>
         <Command className="kaleido-command kaleido-param-options-command" loop>
@@ -373,9 +350,7 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
                 className="kaleido-search-dropdown-item"
               >
                 <span className="kaleido-dropdown-name">{key}</span>
-                <span className="kaleido-dropdown-description">
-                  {option.description}
-                </span>
+                <span className="kaleido-dropdown-description">{option.description}</span>
               </Command.Item>
             ))}
           </Command.List>
@@ -396,15 +371,11 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
           setTimeout(() => inputRef.current?.focus(), 0);
         }}
       >
-        <span className="kaleido-layout-name">
-          {currentLayoutInfo.layoutName}
-        </span>
+        <span className="kaleido-layout-name">{currentLayoutInfo.layoutName}</span>
         {currentLayoutInfo.type === 'option' && (
           <>
             <span className="kaleido-param-separator">&gt;</span>
-            <span className="kaleido-layout-param">
-              {currentLayoutInfo.optionKey}
-            </span>
+            <span className="kaleido-layout-param">{currentLayoutInfo.optionKey}</span>
           </>
         )}
         {currentLayoutInfo.type === 'params' &&
@@ -422,13 +393,8 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
 
   // Render search mode (default) - using cmdk for dropdown filtering/navigation
   return (
-    <div
-      ref={containerRef}
-      className={`kaleido-search-bar ${isTabLocked ? 'locked' : ''}`}
-    >
-      <span className="kaleido-search-prompt">
-        {isTabLocked ? '⊘' : '>'}
-      </span>
+    <div ref={containerRef} className={`kaleido-search-bar ${isTabLocked ? 'locked' : ''}`}>
+      <span className="kaleido-search-prompt">{isTabLocked ? '⊘' : '>'}</span>
       <Command
         className="kaleido-command"
         filter={(value, search) => {
@@ -439,9 +405,7 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
           const layout = registeredLayouts?.[value];
           if (!layout) return 0;
           const nameMatch = layout.name?.toLowerCase().includes(searchLower);
-          const descMatch = layout.description
-            ?.toLowerCase()
-            .includes(searchLower);
+          const descMatch = layout.description?.toLowerCase().includes(searchLower);
           return nameMatch ? 1 : descMatch ? 0.5 : 0;
         }}
         loop
@@ -475,13 +439,8 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
         />
         {/* Dropdown for search results using cmdk Command.List */}
         {!isTabLocked && useDropdown && showDropdown && filteredLayouts && (
-          <Command.List
-            ref={dropdownRef}
-            className="kaleido-search-dropdown"
-          >
-            <Command.Empty className="kaleido-search-empty">
-              No layouts found
-            </Command.Empty>
+          <Command.List ref={dropdownRef} className="kaleido-search-dropdown">
+            <Command.Empty className="kaleido-search-empty">No layouts found</Command.Empty>
             {filteredLayouts.map((layout) => {
               const disabled = isLayoutDisabled?.(layout.id);
               return (
@@ -507,15 +466,9 @@ const KaleidoSearchBar: React.FC<KaleidoSearchBarProps> = ({
                   }}
                   className="kaleido-search-dropdown-item"
                 >
-                  <span className="kaleido-dropdown-name">
-                    {layout.name}
-                  </span>
-                  <span className="kaleido-dropdown-description">
-                    {layout.description}
-                  </span>
-                  {disabled && (
-                    <span className="kaleido-dropdown-badge">Open</span>
-                  )}
+                  <span className="kaleido-dropdown-name">{layout.name}</span>
+                  <span className="kaleido-dropdown-description">{layout.description}</span>
+                  {disabled && <span className="kaleido-dropdown-badge">Open</span>}
                 </Command.Item>
               );
             })}

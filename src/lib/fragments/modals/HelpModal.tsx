@@ -24,11 +24,7 @@ export interface HelpModalProps {
  * Uses shadcn/ui Dialog for accessible modal behavior.
  * Shows version info, keyboard shortcuts, and tab management tips.
  */
-const HelpModal: React.FC<HelpModalProps> = ({
-  open,
-  onOpenChange,
-  version = '0.0.1',
-}) => {
+const HelpModal: React.FC<HelpModalProps> = ({ open, onOpenChange, version = '0.0.1' }) => {
   const kbdClass = [
     'inline-flex items-center justify-center',
     'px-2 py-1 min-w-[1.5rem] h-6',
@@ -73,9 +69,7 @@ const HelpModal: React.FC<HelpModalProps> = ({
               </div>
             </div>
             <div className={shortcutRowClass}>
-              <span className="text-sm text-foreground">
-                Lock / unlock tab
-              </span>
+              <span className="text-sm text-foreground">Lock / unlock tab</span>
               <div className="flex items-center gap-1">
                 <kbd className={kbdClass}>⌃</kbd>
                 <kbd className={kbdClass}>L</kbd>
@@ -111,9 +105,7 @@ const HelpModal: React.FC<HelpModalProps> = ({
               </div>
             </div>
             <div className={shortcutRowClass}>
-              <span className="text-sm text-foreground">
-                Navigate results
-              </span>
+              <span className="text-sm text-foreground">Navigate results</span>
               <div className="flex items-center gap-1">
                 <kbd className={kbdClass}>↑</kbd>
                 <span className="text-muted-foreground text-xs">/</span>
@@ -136,12 +128,8 @@ const HelpModal: React.FC<HelpModalProps> = ({
 
           <h4 className={sectionTitleClass}>Tab Management</h4>
           <div className="rounded-lg border border-border bg-card p-3 space-y-2">
-            <p className="text-sm text-foreground">
-              Right-click a tab for context menu
-            </p>
-            <p className="text-sm text-foreground">
-              Locked tabs cannot be closed or renamed
-            </p>
+            <p className="text-sm text-foreground">Right-click a tab for context menu</p>
+            <p className="text-sm text-foreground">Locked tabs cannot be closed or renamed</p>
           </div>
         </div>
 

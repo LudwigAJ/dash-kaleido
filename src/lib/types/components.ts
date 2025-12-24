@@ -6,13 +6,7 @@
 
 import type * as React from 'react';
 import type { DashComponentProps, PersistenceProps } from './dash';
-import type {
-  Tab,
-  RegisteredLayouts,
-  SearchBarConfig,
-  Theme,
-  Size,
-} from './index';
+import type { Tab, RegisteredLayouts, SearchBarConfig, Theme, Size } from './index';
 
 // =============================================================================
 // KaleidoManager Props
@@ -21,9 +15,7 @@ import type {
 /**
  * Props for the KaleidoManager component
  */
-export interface KaleidoManagerProps
-  extends DashComponentProps,
-    PersistenceProps {
+export interface KaleidoManagerProps extends DashComponentProps, PersistenceProps {
   /** Component ID (required) */
   id: string;
   /** CSS styles to apply to the component */

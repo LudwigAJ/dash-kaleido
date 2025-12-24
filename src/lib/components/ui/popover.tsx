@@ -8,8 +8,9 @@ const PopoverAnchor = PopoverPrimitive.Anchor;
 const PopoverPortal = PopoverPrimitive.Portal;
 const PopoverClose = PopoverPrimitive.Close;
 
-export interface PopoverContentProps
-  extends React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content> {
+export interface PopoverContentProps extends React.ComponentPropsWithoutRef<
+  typeof PopoverPrimitive.Content
+> {
   showArrow?: boolean;
 }
 
@@ -39,11 +40,7 @@ const PopoverContent = React.forwardRef<
         align={align}
         sideOffset={sideOffset}
         collisionPadding={collisionPadding}
-        className={cn(
-          'z-[9999] w-72 rounded-lg p-3 shadow-lg outline-none',
-          'text-sm',
-          className
-        )}
+        className={cn('z-[9999] w-72 rounded-lg p-3 shadow-lg outline-none', 'text-sm', className)}
         style={{
           backgroundColor: 'var(--kaleido-surface, #f8fafc)',
           borderColor: 'var(--kaleido-border, #e2e8f0)',
@@ -54,9 +51,7 @@ const PopoverContent = React.forwardRef<
         {...props}
       >
         {children}
-        {showArrow && (
-          <PopoverPrimitive.Arrow className="fill-popover" />
-        )}
+        {showArrow && <PopoverPrimitive.Arrow className="fill-popover" />}
       </PopoverPrimitive.Content>
     </PopoverPrimitive.Portal>
   )
@@ -64,11 +59,4 @@ const PopoverContent = React.forwardRef<
 
 PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
-export {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverAnchor,
-  PopoverPortal,
-  PopoverClose,
-};
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor, PopoverPortal, PopoverClose };

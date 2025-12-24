@@ -159,8 +159,4 @@ export type Size = 'sm' | 'md' | 'lg';
 // =============================================================================
 
 export type { SetProps, DashComponentProps, PersistenceProps } from './dash';
-export type {
-  KaleidoManagerProps,
-  KaleidoTabProps,
-  DashKaleidoProps,
-} from './components';
+export type { KaleidoManagerProps, KaleidoTabProps, DashKaleidoProps } from './components';

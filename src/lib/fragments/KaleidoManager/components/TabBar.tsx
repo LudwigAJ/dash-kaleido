@@ -100,25 +100,31 @@ const TabBar: React.FC<TabBarProps> = ({
   const tabIds = useMemo(() => sortedTabs.map((tab) => tab.id), [sortedTabs]);
 
   // DnD Kit handlers
-  const handleDragStart = useCallback((event: DragStartEvent) => {
-    const tab = tabs.find((t) => t.id === event.active.id);
-    if (tab) {
-      setDraggedTab(tab);
-    }
-  }, [tabs]);
+  const handleDragStart = useCallback(
+    (event: DragStartEvent) => {
+      const tab = tabs.find((t) => t.id === event.active.id);
+      if (tab) {
+        setDraggedTab(tab);
+      }
+    },
+    [tabs]
+  );
 
-  const handleDragEnd = useCallback((event: DragEndEvent) => {
-    const { active, over } = event;
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
 
-    if (over && active.id !== over.id) {
-      const oldIndex = tabs.findIndex((t) => t.id === active.id);
-      const newIndex = tabs.findIndex((t) => t.id === over.id);
-      const newTabs = arrayMove(tabs, oldIndex, newIndex);
-      onTabsReorder?.(newTabs);
-    }
+      if (over && active.id !== over.id) {
+        const oldIndex = tabs.findIndex((t) => t.id === active.id);
+        const newIndex = tabs.findIndex((t) => t.id === over.id);
+        const newTabs = arrayMove(tabs, oldIndex, newIndex);
+        onTabsReorder?.(newTabs);
+      }
 
-    setDraggedTab(null);
-  }, [tabs, onTabsReorder]);
+      setDraggedTab(null);
+    },
+    [tabs, onTabsReorder]
+  );
 
   const handleDragCancel = useCallback(() => {
     setDraggedTab(null);
@@ -134,10 +140,7 @@ const TabBar: React.FC<TabBarProps> = ({
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <SortableContext
-        items={tabIds}
-        strategy={horizontalListSortingStrategy}
-      >
+      <SortableContext items={tabIds} strategy={horizontalListSortingStrategy}>
         <div
           ref={tabBarRef}
           className={[
@@ -224,9 +227,7 @@ const TabBar: React.FC<TabBarProps> = ({
       </SortableContext>
 
       {/* Drag overlay - shows the tab being dragged */}
-      <DragOverlay>
-        {draggedTab ? <TabOverlay tab={draggedTab} /> : null}
-      </DragOverlay>
+      <DragOverlay>{draggedTab ? <TabOverlay tab={draggedTab} /> : null}</DragOverlay>
     </DndContext>
   );
 };

@@ -95,13 +95,8 @@ const StatusBar: React.FC<StatusBarProps> = ({
         .join(' ')}
     >
       {/* Mode indicator */}
-      <div
-        className={['flex items-center gap-1 cursor-default']
-          .filter(Boolean)
-          .join(' ')}
-      >
-        Mode:{' '}
-        <span className="text-foreground">{currentMode?.name || '--'}</span>
+      <div className={['flex items-center gap-1 cursor-default'].filter(Boolean).join(' ')}>
+        Mode: <span className="text-foreground">{currentMode?.name || '--'}</span>
       </div>
 
       <span className="text-border mx-0.5 opacity-60">|</span>
@@ -143,13 +138,8 @@ const StatusBar: React.FC<StatusBarProps> = ({
               .filter(Boolean)
               .join(' ')}
           >
-            Tab:{' '}
-            <span className="text-foreground">
-              {activeTab?.name || '--'}
-            </span>
-            {activeTab?.locked && (
-              <LockClosedIcon className="w-3 h-3 text-secondary" />
-            )}
+            Tab: <span className="text-foreground">{activeTab?.name || '--'}</span>
+            {activeTab?.locked && <LockClosedIcon className="w-3 h-3 text-secondary" />}
           </div>
         </PopoverTrigger>
         {activeTab && (
@@ -166,24 +156,17 @@ const StatusBar: React.FC<StatusBarProps> = ({
               </div>
               <div className="flex justify-between gap-3">
                 <span className="text-secondary">ID:</span>
-                <span
-                  className="text-foreground font-mono"
-                  style={{ fontSize: '10px' }}
-                >
+                <span className="text-foreground font-mono" style={{ fontSize: '10px' }}>
                   {activeTab.id}
                 </span>
               </div>
               <div className="flex justify-between gap-3">
                 <span className="text-secondary">Created:</span>
-                <span className="text-foreground">
-                  {formatFullDate(activeTab.createdAt)}
-                </span>
+                <span className="text-foreground">{formatFullDate(activeTab.createdAt)}</span>
               </div>
               <div className="flex justify-between gap-3">
                 <span className="text-secondary">Layout:</span>
-                <span className="text-foreground">
-                  {activeTab.layoutId || 'None'}
-                </span>
+                <span className="text-foreground">{activeTab.layoutId || 'None'}</span>
               </div>
               <div className="flex justify-between gap-3 items-center">
                 <span className="text-secondary">Locked:</span>
@@ -200,12 +183,8 @@ const StatusBar: React.FC<StatusBarProps> = ({
               {(activeTab.layoutParams || activeTab.layoutParamOptionKey) && (
                 <div className="flex justify-between gap-3">
                   <span className="text-secondary">Params:</span>
-                  <span
-                    className="text-foreground"
-                    style={{ fontSize: '10px' }}
-                  >
-                    {activeTab.layoutParamOptionKey ||
-                      JSON.stringify(activeTab.layoutParams)}
+                  <span className="text-foreground" style={{ fontSize: '10px' }}>
+                    {activeTab.layoutParamOptionKey || JSON.stringify(activeTab.layoutParams)}
                   </span>
                 </div>
               )}
@@ -218,9 +197,7 @@ const StatusBar: React.FC<StatusBarProps> = ({
 
       {/* Tab count */}
       <div className="flex items-center gap-1 cursor-default">
-        <span className="text-foreground">
-          {maxTabs > 0 ? `${tabCount}/${maxTabs}` : tabCount}
-        </span>
+        <span className="text-foreground">{maxTabs > 0 ? `${tabCount}/${maxTabs}` : tabCount}</span>
         {tabCount === 1 ? 'tab' : 'tabs'}
       </div>
 

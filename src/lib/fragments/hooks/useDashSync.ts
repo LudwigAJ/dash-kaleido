@@ -30,9 +30,7 @@ export function useDashSync({
 
   // Track if we've received initial props from Dash (for persistence)
   const hasReceivedInitialProps = useRef(
-    !!(controlledTabs &&
-      Array.isArray(controlledTabs) &&
-      controlledTabs.length > 0)
+    !!(controlledTabs && Array.isArray(controlledTabs) && controlledTabs.length > 0)
   );
 
   // Status bar sync time
@@ -46,14 +44,9 @@ export function useDashSync({
       return;
     }
 
-    if (
-      controlledActiveTab !== undefined &&
-      controlledActiveTab !== null
-    ) {
+    if (controlledActiveTab !== undefined && controlledActiveTab !== null) {
       // Find the tab with matching layoutId
-      const matchingTab = tabs.find(
-        (tab) => tab.layoutId === controlledActiveTab
-      );
+      const matchingTab = tabs.find((tab) => tab.layoutId === controlledActiveTab);
       if (matchingTab && matchingTab.id !== activeTabId) {
         setActiveTabId(matchingTab.id);
       }
@@ -68,11 +61,7 @@ export function useDashSync({
       return;
     }
 
-    if (
-      controlledTabs !== undefined &&
-      controlledTabs !== null &&
-      Array.isArray(controlledTabs)
-    ) {
+    if (controlledTabs !== undefined && controlledTabs !== null && Array.isArray(controlledTabs)) {
       // Mark that we've received props from Dash (for persistence timing)
       if (controlledTabs.length > 0) {
         hasReceivedInitialProps.current = true;
@@ -115,23 +104,18 @@ export function useDashSync({
           name: activeTab.name,
           createdAt: activeTab.createdAt,
           layoutParams: activeTab.layoutParams || undefined,
-          layoutParamOptionKey:
-            activeTab.layoutParamOptionKey || undefined,
+          layoutParamOptionKey: activeTab.layoutParamOptionKey || undefined,
         }
       : null;
 
     // Build tabsData - only tabs that have a layout selected
     const tabsWithLayouts = tabs.filter((t) => t.layoutId);
     const currentSignature = tabsWithLayouts
-      .map(
-        (t) =>
-          `${t.id}:${t.layoutId}:${JSON.stringify(t.layoutParams || {})}`
-      )
+      .map((t) => `${t.id}:${t.layoutId}:${JSON.stringify(t.layoutParams || {})}`)
       .sort()
       .join('|');
 
-    const tabsDataChanged =
-      currentSignature !== lastSentTabsDataSignature.current;
+    const tabsDataChanged = currentSignature !== lastSentTabsDataSignature.current;
 
     // Mark that we're doing an internal update
     isInternalUpdate.current = true;

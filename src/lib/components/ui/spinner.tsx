@@ -44,11 +44,7 @@ const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={[
-        'animate-spin',
-        spinnerSizes[size] || spinnerSizes.sm,
-        className,
-      ]
+      className={['animate-spin', spinnerSizes[size] || spinnerSizes.sm, className]
         .filter(Boolean)
         .join(' ')}
       {...props}
@@ -60,8 +56,7 @@ const Spinner = React.forwardRef<SVGSVGElement, SpinnerProps>(
 
 Spinner.displayName = 'Spinner';
 
-export interface LoadingOverlayProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface LoadingOverlayProps extends React.HTMLAttributes<HTMLDivElement> {
   show?: boolean;
   text?: string;
   size?: SpinnerSize;
@@ -95,9 +90,7 @@ const LoadingOverlay = React.forwardRef<HTMLDivElement, LoadingOverlayProps>(
         {...props}
       >
         <Spinner size={size} />
-        {text && (
-          <p className="mt-4 text-sm text-muted animate-pulse">{text}</p>
-        )}
+        {text && <p className="mt-4 text-sm text-muted animate-pulse">{text}</p>}
       </div>
     );
   }

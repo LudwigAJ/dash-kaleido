@@ -10,51 +10,53 @@
    ============================================ */
 
 .kaleido-container {
-    /* Typography */
-    --kaleido-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-    --kaleido-font-size-xs: 11px;
-    --kaleido-font-size-base: 14px;
-    --kaleido-font-size-sm: 12px;
-    --kaleido-font-size-lg: 16px;
-    --kaleido-font-size-xl: 18px;
-    
-    /* ============================================
+  /* Typography */
+  --kaleido-font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans',
+    sans-serif;
+  --kaleido-font-size-xs: 11px;
+  --kaleido-font-size-base: 14px;
+  --kaleido-font-size-sm: 12px;
+  --kaleido-font-size-lg: 16px;
+  --kaleido-font-size-xl: 18px;
+
+  /* ============================================
        LIGHT THEME (Default)
        ============================================ */
-    --kaleido-background: #ffffff;
-    --kaleido-foreground: #0f172a;
-    --kaleido-surface: #f8fafc;
-    --kaleido-surface-foreground: #0f172a;
-    --kaleido-surface-dim: #e2e8f0;
-    --kaleido-popover: #ffffff;
-    --kaleido-popover-foreground: #0f172a;
-    --kaleido-primary: #3b82f6;
-    --kaleido-secondary: #64748b;
-    --kaleido-tertiary: #b45309;
-    --kaleido-accent: #f1f5f9;
-    --kaleido-accent-foreground: #0f172a;
-    --kaleido-muted: #f1f5f9;
-    --kaleido-muted-foreground: #64748b;
-    --kaleido-destructive: #ef4444;
-    --kaleido-border: #e2e8f0;
-    --kaleido-input: #f1f5f9;
-    
-    /* Shadows */
-    --kaleido-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-    --kaleido-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
-    --kaleido-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
-    
-    /* Spacing */
-    --kaleido-spacing-xs: 4px;
-    --kaleido-spacing-sm: 8px;
-    --kaleido-spacing-md: 12px;
-    --kaleido-spacing-lg: 16px;
-    --kaleido-spacing-xl: 20px;
-    
-    /* Border radius */
-    --kaleido-radius-sm: 4px;
-    --kaleido-radius-md: 8px;
-    --kaleido-radius-lg: 12px;
+  --kaleido-background: #ffffff;
+  --kaleido-foreground: #0f172a;
+  --kaleido-surface: #f8fafc;
+  --kaleido-surface-foreground: #0f172a;
+  --kaleido-surface-dim: #e2e8f0;
+  --kaleido-popover: #ffffff;
+  --kaleido-popover-foreground: #0f172a;
+  --kaleido-primary: #3b82f6;
+  --kaleido-secondary: #64748b;
+  --kaleido-tertiary: #b45309;
+  --kaleido-accent: #f1f5f9;
+  --kaleido-accent-foreground: #0f172a;
+  --kaleido-muted: #f1f5f9;
+  --kaleido-muted-foreground: #64748b;
+  --kaleido-destructive: #ef4444;
+  --kaleido-border: #e2e8f0;
+  --kaleido-input: #f1f5f9;
+
+  /* Shadows */
+  --kaleido-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --kaleido-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --kaleido-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+
+  /* Spacing */
+  --kaleido-spacing-xs: 4px;
+  --kaleido-spacing-sm: 8px;
+  --kaleido-spacing-md: 12px;
+  --kaleido-spacing-lg: 16px;
+  --kaleido-spacing-xl: 20px;
+
+  /* Border radius */
+  --kaleido-radius-sm: 4px;
+  --kaleido-radius-md: 8px;
+  --kaleido-radius-lg: 12px;
 }
 
 /* ============================================
@@ -62,27 +64,27 @@
    ============================================ */
 .kaleido-container.kaleido-theme-dark,
 .kaleido-theme-dark {
-    --kaleido-background: #0f172a;
-    --kaleido-foreground: #f8fafc;
-    --kaleido-surface: #1e293b;
-    --kaleido-surface-foreground: #f8fafc;
-    --kaleido-surface-dim: #334155;
-    --kaleido-popover: #1e293b;
-    --kaleido-popover-foreground: #f8fafc;
-    --kaleido-primary: #60a5fa;
-    --kaleido-secondary: #94a3b8;
-    --kaleido-tertiary: #f59e0b;
-    --kaleido-accent: #1e293b;
-    --kaleido-accent-foreground: #f8fafc;
-    --kaleido-muted: #1e293b;
-    --kaleido-muted-foreground: #94a3b8;
-    --kaleido-destructive: #f87171;
-    --kaleido-border: #475569;
-    --kaleido-input: #1e293b;
-    
-    --kaleido-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --kaleido-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --kaleido-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+  --kaleido-background: #0f172a;
+  --kaleido-foreground: #f8fafc;
+  --kaleido-surface: #1e293b;
+  --kaleido-surface-foreground: #f8fafc;
+  --kaleido-surface-dim: #334155;
+  --kaleido-popover: #1e293b;
+  --kaleido-popover-foreground: #f8fafc;
+  --kaleido-primary: #60a5fa;
+  --kaleido-secondary: #94a3b8;
+  --kaleido-tertiary: #f59e0b;
+  --kaleido-accent: #1e293b;
+  --kaleido-accent-foreground: #f8fafc;
+  --kaleido-muted: #1e293b;
+  --kaleido-muted-foreground: #94a3b8;
+  --kaleido-destructive: #f87171;
+  --kaleido-border: #475569;
+  --kaleido-input: #1e293b;
+
+  --kaleido-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --kaleido-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --kaleido-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
 
 /* ============================================
@@ -93,23 +95,24 @@
 
 [data-radix-popper-content-wrapper],
 [data-radix-portal] {
-    --kaleido-background: #ffffff;
-    --kaleido-foreground: #0f172a;
-    --kaleido-surface: #f8fafc;
-    --kaleido-surface-foreground: #0f172a;
-    --kaleido-surface-dim: #f1f5f9;
-    --kaleido-popover: #ffffff;
-    --kaleido-popover-foreground: #0f172a;
-    --kaleido-primary: #3b82f6;
-    --kaleido-secondary: #64748b;
-    --kaleido-border: #e2e8f0;
-    --kaleido-destructive: #ef4444;
-    --kaleido-accent: #f1f5f9;
-    --kaleido-accent-foreground: #0f172a;
-    --kaleido-input: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
+  --kaleido-background: #ffffff;
+  --kaleido-foreground: #0f172a;
+  --kaleido-surface: #f8fafc;
+  --kaleido-surface-foreground: #0f172a;
+  --kaleido-surface-dim: #f1f5f9;
+  --kaleido-popover: #ffffff;
+  --kaleido-popover-foreground: #0f172a;
+  --kaleido-primary: #3b82f6;
+  --kaleido-secondary: #64748b;
+  --kaleido-border: #e2e8f0;
+  --kaleido-destructive: #ef4444;
+  --kaleido-accent: #f1f5f9;
+  --kaleido-accent-foreground: #0f172a;
+  --kaleido-input: #ffffff;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 /* Dark theme portal styles */
@@ -117,20 +120,20 @@
 .kaleido-theme-dark ~ [data-radix-portal],
 body:has(.kaleido-theme-dark) [data-radix-popper-content-wrapper],
 body:has(.kaleido-theme-dark) [data-radix-portal] {
-    --kaleido-background: #0f172a;
-    --kaleido-foreground: #f8fafc;
-    --kaleido-surface: #1e293b;
-    --kaleido-surface-foreground: #f8fafc;
-    --kaleido-surface-dim: #334155;
-    --kaleido-popover: #1e293b;
-    --kaleido-popover-foreground: #f8fafc;
-    --kaleido-primary: #60a5fa;
-    --kaleido-secondary: #94a3b8;
-    --kaleido-border: #475569;
-    --kaleido-destructive: #f87171;
-    --kaleido-accent: #334155;
-    --kaleido-accent-foreground: #f8fafc;
-    --kaleido-input: #1e293b;
+  --kaleido-background: #0f172a;
+  --kaleido-foreground: #f8fafc;
+  --kaleido-surface: #1e293b;
+  --kaleido-surface-foreground: #f8fafc;
+  --kaleido-surface-dim: #334155;
+  --kaleido-popover: #1e293b;
+  --kaleido-popover-foreground: #f8fafc;
+  --kaleido-primary: #60a5fa;
+  --kaleido-secondary: #94a3b8;
+  --kaleido-border: #475569;
+  --kaleido-destructive: #f87171;
+  --kaleido-accent: #334155;
+  --kaleido-accent-foreground: #f8fafc;
+  --kaleido-input: #1e293b;
 }
 
 /* ============================================
@@ -138,25 +141,25 @@ body:has(.kaleido-theme-dark) [data-radix-portal] {
    ============================================ */
 
 .kaleido-size-sm {
-    --kaleido-font-size-base: 13px;
-    --kaleido-font-size-sm: 10px;
-    --kaleido-font-size-lg: 14px;
-    --kaleido-font-size-xl: 14px;
-    --kaleido-spacing-sm: 6px;
-    --kaleido-spacing-md: 8px;
-    --kaleido-spacing-lg: 12px;
-    --kaleido-spacing-xl: 14px;
+  --kaleido-font-size-base: 13px;
+  --kaleido-font-size-sm: 10px;
+  --kaleido-font-size-lg: 14px;
+  --kaleido-font-size-xl: 14px;
+  --kaleido-spacing-sm: 6px;
+  --kaleido-spacing-md: 8px;
+  --kaleido-spacing-lg: 12px;
+  --kaleido-spacing-xl: 14px;
 }
 
 .kaleido-size-lg {
-    --kaleido-font-size-base: 16px;
-    --kaleido-font-size-sm: 13px;
-    --kaleido-font-size-lg: 18px;
-    --kaleido-font-size-xl: 22px;
-    --kaleido-spacing-sm: 10px;
-    --kaleido-spacing-md: 14px;
-    --kaleido-spacing-lg: 20px;
-    --kaleido-spacing-xl: 28px;
+  --kaleido-font-size-base: 16px;
+  --kaleido-font-size-sm: 13px;
+  --kaleido-font-size-lg: 18px;
+  --kaleido-font-size-xl: 22px;
+  --kaleido-spacing-sm: 10px;
+  --kaleido-spacing-md: 14px;
+  --kaleido-spacing-lg: 20px;
+  --kaleido-spacing-xl: 28px;
 }
 
 /* ============================================
@@ -167,69 +170,69 @@ body:has(.kaleido-theme-dark) [data-radix-portal] {
 
 /* Tab rename input - needs absolute positioning relative to tab */
 .kaleido-tab-rename-input {
-    position: absolute;
-    left: 12px;
-    right: 28px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: var(--kaleido-input);
-    border: 1px solid var(--kaleido-primary);
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-size: inherit;
-    font-family: inherit;
-    color: var(--kaleido-foreground);
-    outline: none;
-    box-sizing: border-box;
-    z-index: 10;
+  position: absolute;
+  left: 12px;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--kaleido-input);
+  border: 1px solid var(--kaleido-primary);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: inherit;
+  font-family: inherit;
+  color: var(--kaleido-foreground);
+  outline: none;
+  box-sizing: border-box;
+  z-index: 10;
 }
 
 .kaleido-tab-rename-input:focus {
-    border-color: var(--kaleido-primary);
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  border-color: var(--kaleido-primary);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 /* CMDK overrides - external library needs CSS overrides */
 [cmdk-root].kaleido-command {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    position: static;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: static;
 }
 
 [cmdk-root].kaleido-param-options-command {
-    position: static;
+  position: static;
 }
 
 [cmdk-list] {
-    transition: height 100ms ease;
+  transition: height 100ms ease;
 }
 
 [cmdk-input]:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 /* Status bar fixed heights */
 .kaleido-status-bar {
-    height: 22px;
-    min-height: 22px;
-    max-height: 22px;
-    flex-shrink: 0;
+  height: 22px;
+  min-height: 22px;
+  max-height: 22px;
+  flex-shrink: 0;
 }
 
 .kaleido-size-sm .kaleido-status-bar {
-    height: 18px;
-    min-height: 18px;
-    max-height: 18px;
-    font-size: 10px;
+  height: 18px;
+  min-height: 18px;
+  max-height: 18px;
+  font-size: 10px;
 }
 
 .kaleido-size-lg .kaleido-status-bar {
-    height: 26px;
-    min-height: 26px;
-    max-height: 26px;
-    font-size: 12px;
+  height: 26px;
+  min-height: 26px;
+  max-height: 26px;
+  font-size: 12px;
 }
 
 /* ============================================
@@ -238,195 +241,194 @@ body:has(.kaleido-theme-dark) [data-radix-portal] {
    ============================================ */
 
 .kaleido-search-bar {
-    /* Fixed height for consistency */
-    height: 36px;
-    min-height: 36px;
-    max-height: 36px;
-    /* Layout */
-    display: flex;
-    align-items: center;
-    gap: var(--kaleido-spacing-sm);
-    padding: 0 var(--kaleido-spacing-md);
-    background-color: var(--kaleido-background);
-    border-bottom: 1px solid var(--kaleido-border);
-    font-family: var(--kaleido-font-family);
-    position: relative;
+  /* Fixed height for consistency */
+  height: 36px;
+  min-height: 36px;
+  max-height: 36px;
+  /* Layout */
+  display: flex;
+  align-items: center;
+  gap: var(--kaleido-spacing-sm);
+  padding: 0 var(--kaleido-spacing-md);
+  background-color: var(--kaleido-background);
+  border-bottom: 1px solid var(--kaleido-border);
+  font-family: var(--kaleido-font-family);
+  position: relative;
 }
 
 .kaleido-size-sm .kaleido-search-bar {
-    height: 32px;
-    min-height: 32px;
-    max-height: 32px;
+  height: 32px;
+  min-height: 32px;
+  max-height: 32px;
 }
 
 .kaleido-size-lg .kaleido-search-bar {
-    height: 42px;
-    min-height: 42px;
-    max-height: 42px;
+  height: 42px;
+  min-height: 42px;
+  max-height: 42px;
 }
 
 .kaleido-search-bar.locked {
-    opacity: 0.6;
-    pointer-events: none;
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .kaleido-search-prompt {
-    color: var(--kaleido-primary);
-    font-weight: 500;
-    font-size: var(--kaleido-font-size-xs);
-    white-space: nowrap;
+  color: var(--kaleido-primary);
+  font-weight: 500;
+  font-size: var(--kaleido-font-size-xs);
+  white-space: nowrap;
 }
 
 .kaleido-param-separator {
-    color: var(--kaleido-secondary);
-    font-size: var(--kaleido-font-size-xs);
+  color: var(--kaleido-secondary);
+  font-size: var(--kaleido-font-size-xs);
 }
 
 .kaleido-search-input {
-    flex: 1;
-    min-width: 0;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-size: var(--kaleido-font-size-sm);
-    color: var(--kaleido-foreground);
-    font-family: inherit;
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: var(--kaleido-font-size-sm);
+  color: var(--kaleido-foreground);
+  font-family: inherit;
 }
 
 .kaleido-search-input::placeholder {
-    color: var(--kaleido-secondary);
-    opacity: 0.6;
+  color: var(--kaleido-secondary);
+  opacity: 0.6;
 }
 
 .kaleido-param-input {
-    max-width: 200px;
+  max-width: 200px;
 }
 
 .kaleido-param-input.showing-default {
-    color: var(--kaleido-secondary);
-    font-style: italic;
+  color: var(--kaleido-secondary);
+  font-style: italic;
 }
 
 .kaleido-param-hint {
-    color: var(--kaleido-secondary);
-    font-size: var(--kaleido-font-size-xs);
-    white-space: nowrap;
+  color: var(--kaleido-secondary);
+  font-size: var(--kaleido-font-size-xs);
+  white-space: nowrap;
 }
 
 .kaleido-param-default-hint {
-    color: var(--kaleido-tertiary);
+  color: var(--kaleido-tertiary);
 }
 
 .kaleido-param-cancel-btn {
-    background: transparent;
-    border: none;
-    color: var(--kaleido-secondary);
-    font-size: 18px;
-    cursor: pointer;
-    padding: 0 4px;
-    line-height: 1;
-    transition: color 0.15s ease;
+  background: transparent;
+  border: none;
+  color: var(--kaleido-secondary);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.15s ease;
 }
 
 .kaleido-param-cancel-btn:hover {
-    color: var(--kaleido-destructive);
+  color: var(--kaleido-destructive);
 }
 
 .kaleido-param-options-spacer {
-    flex: 1;
+  flex: 1;
 }
 
 /* Layout display mode */
 .kaleido-layout-display {
-    cursor: pointer;
-    transition: background-color 0.15s ease;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
 }
 
 .kaleido-layout-display:hover {
-    background-color: var(--kaleido-surface-dim);
+  background-color: var(--kaleido-surface-dim);
 }
 
 .kaleido-layout-display:focus {
-    outline: 2px solid var(--kaleido-primary);
-    outline-offset: -2px;
+  outline: 2px solid var(--kaleido-primary);
+  outline-offset: -2px;
 }
 
 .kaleido-layout-name {
-    color: var(--kaleido-foreground);
-    font-weight: 500;
-    font-size: var(--kaleido-font-size-sm);
+  color: var(--kaleido-foreground);
+  font-weight: 500;
+  font-size: var(--kaleido-font-size-sm);
 }
 
 .kaleido-layout-param {
-    color: var(--kaleido-tertiary);
-    font-size: var(--kaleido-font-size-sm);
+  color: var(--kaleido-tertiary);
+  font-size: var(--kaleido-font-size-sm);
 }
 
 /* Search dropdown */
 .kaleido-search-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    max-height: 300px;
-    overflow-y: auto;
-    background-color: var(--kaleido-popover);
-    border: 1px solid var(--kaleido-border);
-    border-top: none;
-    box-shadow: var(--kaleido-shadow-md);
-    z-index: 50;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: var(--kaleido-popover);
+  border: 1px solid var(--kaleido-border);
+  border-top: none;
+  box-shadow: var(--kaleido-shadow-md);
+  z-index: 50;
 }
 
 .kaleido-param-options-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
 }
 
 .kaleido-search-dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: var(--kaleido-spacing-sm);
-    padding: 6px var(--kaleido-spacing-md);
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-    font-size: var(--kaleido-font-size-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--kaleido-spacing-sm);
+  padding: 6px var(--kaleido-spacing-md);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  font-size: var(--kaleido-font-size-sm);
 }
 
 .kaleido-search-dropdown-item:hover,
-.kaleido-search-dropdown-item[data-selected="true"],
-.kaleido-search-dropdown-item[aria-selected="true"] {
-    background-color: var(--kaleido-accent);
+.kaleido-search-dropdown-item[data-selected='true'],
+.kaleido-search-dropdown-item[aria-selected='true'] {
+  background-color: var(--kaleido-accent);
 }
 
-.kaleido-search-dropdown-item[data-disabled="true"],
-.kaleido-search-dropdown-item[aria-disabled="true"] {
-    opacity: 0.5;
-    cursor: not-allowed;
+.kaleido-search-dropdown-item[data-disabled='true'],
+.kaleido-search-dropdown-item[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .kaleido-dropdown-name {
-    font-weight: 500;
-    color: var(--kaleido-foreground);
-    white-space: nowrap;
-    font-size: var(--kaleido-font-size-sm);
+  font-weight: 500;
+  color: var(--kaleido-foreground);
+  white-space: nowrap;
+  font-size: var(--kaleido-font-size-sm);
 }
 
 .kaleido-dropdown-description {
-    flex: 1;
-    color: var(--kaleido-secondary);
-    font-size: var(--kaleido-font-size-xs);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  flex: 1;
+  color: var(--kaleido-secondary);
+  font-size: var(--kaleido-font-size-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .kaleido-dropdown-badge {
-    font-size: var(--kaleido-font-size-xs);
-    padding: 1px 6px;
-    border-radius: 10px;
-    background-color: var(--kaleido-accent);
-    color: var(--kaleido-secondary);
+  font-size: var(--kaleido-font-size-xs);
+  padding: 1px 6px;
+  border-radius: 10px;
+  background-color: var(--kaleido-accent);
+  color: var(--kaleido-secondary);
 }
-

@@ -116,10 +116,7 @@ export function useKeyboardShortcuts({
       }
 
       // F1 or ? (without modifiers): Open help modal
-      if (
-        e.key === 'F1' ||
-        (e.key === '?' && !e.ctrlKey && !e.metaKey && !isInInput)
-      ) {
+      if (e.key === 'F1' || (e.key === '?' && !e.ctrlKey && !e.metaKey && !isInInput)) {
         e.preventDefault();
         setShowHelpModal(true);
         return;
@@ -127,13 +124,7 @@ export function useKeyboardShortcuts({
 
       // Tab key (without modifiers): Focus search bar
       // Only if search bar is visible, we're not already in an input, and dropdown is not showing
-      if (
-        e.key === 'Tab' &&
-        !e.shiftKey &&
-        !e.ctrlKey &&
-        !e.metaKey &&
-        !e.altKey
-      ) {
+      if (e.key === 'Tab' && !e.shiftKey && !e.ctrlKey && !e.metaKey && !e.altKey) {
         // Don't intercept Tab if dropdown is visible (handled by search keydown)
         if (showSearchDropdown) return;
 

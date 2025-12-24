@@ -75,9 +75,7 @@ const KaleidoModal: React.FC<KaleidoModalProps> = ({
       <DialogContent className={maxWidthClasses[maxWidth]}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          {description && (
-            <DialogDescription>{description}</DialogDescription>
-          )}
+          {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
 
         <div className="mt-4">{children}</div>
@@ -144,18 +142,13 @@ export interface KaleidoModalSectionProps {
 /**
  * KaleidoModalSection - A styled section with title for grouping content
  */
-export const KaleidoModalSection: React.FC<KaleidoModalSectionProps> = ({
-  title,
-  children,
-}) => {
+export const KaleidoModalSection: React.FC<KaleidoModalSectionProps> = ({ title, children }) => {
   return (
     <div className="mb-4 last:mb-0">
       <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mt-4 mb-3 first:mt-0">
         {title}
       </h4>
-      <div className="rounded-lg border border-border bg-card p-3">
-        {children}
-      </div>
+      <div className="rounded-lg border border-border bg-card p-3">{children}</div>
     </div>
   );
 };

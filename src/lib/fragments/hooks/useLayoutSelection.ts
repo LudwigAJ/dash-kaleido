@@ -63,34 +63,51 @@ export function useLayoutSelection({
   const paramOptionsDropdownRef = useRef<HTMLDivElement>(null);
 
   // Get current state as an object (for external save/restore)
-  const getCurrentState = useCallback((): LayoutSelectionState => ({
-    searchQuery,
-    showSearchDropdown,
-    selectedLayoutIndex,
-    isKeyboardNavigating,
-    isEditingSearch,
-    pendingLayout,
-    pendingParams,
-    currentParamIndex,
-    parameterValues,
-    paramInputValue,
-    showingDefault,
-    showParamOptionsDropdown,
-    paramOptions,
-    selectedParamOptionIndex,
-    loadingLayoutInfo,
-  }), [
-    searchQuery, showSearchDropdown, selectedLayoutIndex, isKeyboardNavigating,
-    isEditingSearch, pendingLayout, pendingParams, currentParamIndex,
-    parameterValues, paramInputValue, showingDefault, showParamOptionsDropdown,
-    paramOptions, selectedParamOptionIndex, loadingLayoutInfo
-  ]);
+  const getCurrentState = useCallback(
+    (): LayoutSelectionState => ({
+      searchQuery,
+      showSearchDropdown,
+      selectedLayoutIndex,
+      isKeyboardNavigating,
+      isEditingSearch,
+      pendingLayout,
+      pendingParams,
+      currentParamIndex,
+      parameterValues,
+      paramInputValue,
+      showingDefault,
+      showParamOptionsDropdown,
+      paramOptions,
+      selectedParamOptionIndex,
+      loadingLayoutInfo,
+    }),
+    [
+      searchQuery,
+      showSearchDropdown,
+      selectedLayoutIndex,
+      isKeyboardNavigating,
+      isEditingSearch,
+      pendingLayout,
+      pendingParams,
+      currentParamIndex,
+      parameterValues,
+      paramInputValue,
+      showingDefault,
+      showParamOptionsDropdown,
+      paramOptions,
+      selectedParamOptionIndex,
+      loadingLayoutInfo,
+    ]
+  );
 
   // Save current state to cache for the given tab ID
-  const saveStateToCache = useCallback((tabId: string | null) => {
-    if (!tabId) return;
-    tabStateCache.current[tabId] = getCurrentState();
-  }, [getCurrentState]);
+  const saveStateToCache = useCallback(
+    (tabId: string | null) => {
+      if (!tabId) return;
+      tabStateCache.current[tabId] = getCurrentState();
+    },
+    [getCurrentState]
+  );
 
   // Restore state from cache for the given tab ID
   const restoreStateFromCache = useCallback((tabId: string | null) => {
@@ -209,9 +226,7 @@ export function useLayoutSelection({
     (layoutId: string): boolean => {
       const layoutMeta = registeredLayouts?.[layoutId];
       if (layoutMeta?.allowMultiple) return false;
-      return tabs.some(
-        (tab) => tab.layoutId === layoutId && tab.id !== activeTabId
-      );
+      return tabs.some((tab) => tab.layoutId === layoutId && tab.id !== activeTabId);
     },
     [registeredLayouts, tabs, activeTabId]
   );
@@ -230,11 +245,7 @@ export function useLayoutSelection({
       }))
       .filter((layout) => {
         if (!query) return true;
-        const searchableText = [
-          layout.name,
-          layout.description,
-          ...(layout.keywords || []),
-        ]
+        const searchableText = [layout.name, layout.description, ...(layout.keywords || [])]
           .join(' ')
           .toLowerCase();
         return searchableText.includes(query);
@@ -251,8 +262,7 @@ export function useLayoutSelection({
       return getFilteredLayouts();
     }
 
-    const initialLayouts =
-      searchBarConfig.displayedLayouts ?? displayedLayouts;
+    const initialLayouts = searchBarConfig.displayedLayouts ?? displayedLayouts;
 
     if (!initialLayouts || initialLayouts.length === 0) {
       return [];
@@ -288,11 +298,7 @@ export function useLayoutSelection({
 
   // Apply the layout to the tab
   const applyLayoutToTab = useCallback(
-    (
-      layoutId: string,
-      params: Record<string, string> = {},
-      optionKey: string | null = null
-    ) => {
+    (layoutId: string, params: Record<string, string> = {}, optionKey: string | null = null) => {
       const layoutName = registeredLayouts[layoutId]?.name || 'Untitled';
 
       // Set loading info to show in search bar while layout loads
@@ -412,8 +418,7 @@ export function useLayoutSelection({
   const advanceToNextParam = useCallback(() => {
     const currentParam = pendingParams[currentParamIndex];
     const valueToSave =
-      paramInputValue ||
-      (currentParam?.hasDefault ? String(currentParam.default) : '');
+      paramInputValue || (currentParam?.hasDefault ? String(currentParam.default) : '');
 
     const newValues = { ...parameterValues, [currentParam.name]: valueToSave };
     setParameterValues(newValues);

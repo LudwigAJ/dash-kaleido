@@ -46,14 +46,7 @@ export interface KaleidoTabProps {
  * visibility toggling based on the active tab.
  */
 const KaleidoTab: React.FC<KaleidoTabProps> = (props) => {
-  const {
-    id,
-    children,
-    style = {},
-    className = '',
-    loading_state,
-    ...otherProps
-  } = props;
+  const { id, children, style = {}, className = '', loading_state, ...otherProps } = props;
 
   // Extract data-* attributes to pass to root element
   const dataAttributes = Object.keys(otherProps)

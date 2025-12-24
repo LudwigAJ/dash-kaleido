@@ -123,10 +123,7 @@ const NotificationArea: React.FC<NotificationAreaProps> = ({
             }}
           >
             <span
-              className={[
-                'flex-shrink-0 text-sm',
-                getTypeColorClass(latestNotification.type),
-              ]
+              className={['flex-shrink-0 text-sm', getTypeColorClass(latestNotification.type)]
                 .filter(Boolean)
                 .join(' ')}
             >
@@ -136,10 +133,7 @@ const NotificationArea: React.FC<NotificationAreaProps> = ({
               {latestNotification.message}
             </span>
             {notifications.length > 1 && (
-              <Tooltip
-                content="Click to see all notifications"
-                delayDuration={200}
-              >
+              <Tooltip content="Click to see all notifications" delayDuration={200}>
                 <span
                   className={[
                     'flex-shrink-0 bg-primary text-background',
@@ -171,9 +165,7 @@ const NotificationArea: React.FC<NotificationAreaProps> = ({
         {/* Notification History Popover */}
         {notifications.length > 1 && (
           <PopoverContent
-            className={['w-80 max-h-[300px] p-0', 'overflow-hidden']
-              .filter(Boolean)
-              .join(' ')}
+            className={['w-80 max-h-[300px] p-0', 'overflow-hidden'].filter(Boolean).join(' ')}
             sideOffset={8}
             align="end"
           >
@@ -218,18 +210,13 @@ const NotificationArea: React.FC<NotificationAreaProps> = ({
                     .join(' ')}
                 >
                   <span
-                    className={[
-                      'mt-0.5',
-                      getTypeColorClass(notification.type),
-                    ]
+                    className={['mt-0.5', getTypeColorClass(notification.type)]
                       .filter(Boolean)
                       .join(' ')}
                   >
                     <NotificationIcon type={notification.type} />
                   </span>
-                  <span className="flex-1 text-foreground">
-                    {notification.message}
-                  </span>
+                  <span className="flex-1 text-foreground">{notification.message}</span>
                   <span className="flex-shrink-0 text-secondary text-[10px]">
                     {new Date(notification.timestamp).toLocaleTimeString()}
                   </span>
