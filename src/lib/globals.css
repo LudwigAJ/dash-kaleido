@@ -1,0 +1,69 @@
+/**
+ * Tailwind CSS v4 Entry Point for Kaleido
+ * 
+ * Uses CSS-first configuration with @theme inline.
+ * We keep our --kaleido-* CSS variables as the source of truth
+ * and map them to Tailwind's color system.
+ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* 
+ * Source paths for Tailwind to scan for class usage.
+ * This is REQUIRED for Tailwind v4 to generate utility classes
+ * when source files are in non-standard locations or use TypeScript.
+ */
+@source "../**/*.{ts,tsx}";
+@source "./**/*.{ts,tsx,css}";
+
+/* Dark mode variant - activated by .kaleido-theme-dark class */
+@custom-variant dark (&:is(.kaleido-theme-dark *));
+
+/* 
+ * Theme configuration - maps our CSS variables to Tailwind utilities
+ * This replaces tailwind.config.js in v4
+ */
+@theme inline {
+  /* Colors - map to our existing CSS variables */
+  --color-background: var(--kaleido-background);
+  --color-foreground: var(--kaleido-foreground);
+  --color-card: var(--kaleido-surface);
+  --color-card-foreground: var(--kaleido-surface-foreground);
+  --color-popover: var(--kaleido-popover);
+  --color-popover-foreground: var(--kaleido-popover-foreground);
+  --color-primary: var(--kaleido-primary);
+  --color-primary-foreground: var(--kaleido-background);
+  --color-secondary: var(--kaleido-secondary);
+  --color-secondary-foreground: var(--kaleido-foreground);
+  --color-muted: var(--kaleido-muted);
+  --color-muted-foreground: var(--kaleido-muted-foreground);
+  --color-accent: var(--kaleido-accent);
+  --color-accent-foreground: var(--kaleido-accent-foreground);
+  --color-destructive: var(--kaleido-destructive);
+  --color-destructive-foreground: var(--kaleido-background);
+  --color-border: var(--kaleido-border);
+  --color-input: var(--kaleido-input);
+  --color-ring: var(--kaleido-primary);
+  
+  /* Additional custom colors */
+  --color-surface: var(--kaleido-surface);
+  --color-surface-foreground: var(--kaleido-surface-foreground);
+  --color-surface-dim: var(--kaleido-surface-dim);
+  --color-tertiary: var(--kaleido-tertiary);
+  
+  /* Border radius */
+  --radius-sm: var(--kaleido-radius-sm);
+  --radius-md: var(--kaleido-radius-md);
+  --radius-lg: var(--kaleido-radius-lg);
+  
+  /* Shadows */
+  --shadow-sm: var(--kaleido-shadow-sm);
+  --shadow-md: var(--kaleido-shadow-md);
+  --shadow-lg: var(--kaleido-shadow-lg);
+}
+
+/* 
+ * NOTE: Component CSS (KaleidoManager.css) is imported directly 
+ * in index.ts which provides the --kaleido-* CSS variable definitions.
+ */
