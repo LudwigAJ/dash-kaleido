@@ -37,7 +37,6 @@ import type {
   LayoutMetadata,
   LayoutParameter,
   Notification,
-  DashId,
   SetProps,
   LoadingState,
 } from '@/types';
@@ -53,7 +52,7 @@ export interface SearchBarConfig {
 }
 
 export interface KaleidoManagerProps {
-  id: DashId;
+  id: string;
   style?: React.CSSProperties;
   registeredLayouts?: Record<string, LayoutMetadata>;
   displayedLayouts?: string[] | null;

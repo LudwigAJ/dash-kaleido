@@ -5,7 +5,7 @@
  */
 
 import type * as React from 'react';
-import type { DashComponentProps, PersistenceProps, DashId } from './dash';
+import type { DashComponentProps, PersistenceProps } from './dash';
 import type {
   Tab,
   RegisteredLayouts,
@@ -25,7 +25,7 @@ export interface KaleidoManagerProps
   extends DashComponentProps,
     PersistenceProps {
   /** Component ID (required) */
-  id: DashId;
+  id: string;
   /** CSS styles to apply to the component */
   style?: React.CSSProperties;
   /** Currently active tab ID */
@@ -70,7 +70,7 @@ export interface KaleidoManagerProps
  */
 export interface KaleidoTabProps extends DashComponentProps {
   /** Component ID (required) */
-  id: DashId;
+  id: string;
   /** Tab content */
   children?: React.ReactNode;
   /** CSS styles to apply */

@@ -7,21 +7,6 @@
 import type { LoadingState } from './index';
 
 // =============================================================================
-// Dash Component ID Types
-// =============================================================================
-
-/**
- * Dash component ID - can be a simple string or a pattern-matching object
- */
-export type DashId =
-  | string
-  | {
-      type: string;
-      index: string | number;
-      [key: string]: string | number; // Additional pattern-matching keys
-    };
-
-// =============================================================================
 // Dash Props Types
 // =============================================================================
 
@@ -35,7 +20,7 @@ export type SetProps<T> = (props: Partial<T>) => void;
  */
 export interface DashComponentProps {
   /** Component ID (required for callbacks) */
-  id?: DashId;
+  id?: string;
   /** Dash loading state */
   loading_state?: LoadingState;
   /** Function to update props (provided by Dash) */
