@@ -6,7 +6,7 @@ Dash Kaleido provides an advanced tab management system for Plotly Dash, allowin
 
 ## Features
 
-- **Multiple Themes** - Choose from 7 built-in themes (light, dark, arctic, ocean, forest, desert, highcontrast)
+- **Themes** - Light and dark themes with CSS custom properties for easy customization
 - **Dynamic Tab Management** - Create, rename, reorder, and close tabs on the fly
 - **Searchable Layout Library** - Find the perfect layout with keyword search and dropdown
 - **Persistence Support** - Save tab state to local storage, session storage, or memory
@@ -19,11 +19,13 @@ Dash Kaleido provides an advanced tab management system for Plotly Dash, allowin
 
 ## Installation
 
+### From PyPI (Recommended)
+
 ```bash
 pip install dash-kaleido
 ```
 
-Or install from source:
+### From Source
 
 ```bash
 git clone https://github.com/LudwigAJ/dash-kaleido.git
@@ -32,6 +34,16 @@ npm install
 npm run build
 pip install -e .
 ```
+
+### Requirements
+
+- **Python**: >= 3.8
+- **Dash**: >= 2.0.0
+- **Node.js**: >= 18 (for development only)
+
+**Python Dependencies:**
+- `dash` >= 2.0.0
+- `plotly` (typically installed with Dash)
 
 ## Quick Start
 
@@ -240,7 +252,7 @@ This function:
 | `id` | string/dict | **required** | Component ID for Dash callbacks |
 | `displayedLayouts` | array | `[]` | Layout IDs to show in the "New Tab" picker |
 | `initialTab` | string | `None` | Layout ID to open by default (if no persisted state) |
-| `theme` | string | `'light'` | Theme: light, dark, arctic, ocean, forest, desert, highcontrast |
+| `theme` | string | `'light'` | Theme: `'light'` or `'dark'` |
 | `enableStatusBar` | boolean | `False` | Show status bar at bottom with mode, layout, and sync info |
 | `searchBarConfig` | object | `{}` | Configuration for the search bar (see below) |
 | `contentOverflow` | string | `'auto'` | Content overflow: auto, scroll, hidden, visible |
@@ -269,7 +281,7 @@ searchBarConfig={
 
 ## Themes
 
-Dash Kaleido includes 7 beautiful themes with CSS custom properties for easy customization:
+Dash Kaleido includes light and dark themes with CSS custom properties for easy customization:
 
 ```python
 # Light theme (default)
@@ -277,21 +289,6 @@ theme='light'
 
 # Dark theme
 theme='dark'
-
-# Arctic theme (cool blues)
-theme='arctic'
-
-# Ocean theme (teals)
-theme='ocean'
-
-# Forest theme (greens)
-theme='forest'
-
-# Desert theme (warm yellows)
-theme='desert'
-
-# High Contrast theme (maximum readability)
-theme='highcontrast'
 ```
 
 ### Customizing with CSS Variables
@@ -424,29 +421,79 @@ python usage.py
 
 Initialize Kaleido callbacks. **Must be called after `app.layout` is set.**
 
+This function automatically:
+- Populates the `KaleidoManager`'s `registeredLayouts` with metadata from the registry
+- Creates the callback to render layout content based on `tabsData`
+- Handles static vs. lazy layouts automatically
+- Injects tab IDs for `allow_multiple=True` layouts
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `app` | `dash.Dash` | The Dash application instance |
+| `kaleido_id` | `str` | The ID of the KaleidoManager component |
+
 ```python
 app.layout = html.Div([dash_kaleido.KaleidoManager(id='kaleido', ...)])
 dash_kaleido.init(app, 'kaleido')
 ```
 
-#### `register_layout(layout_id, name, description, keywords, layout)`
+---
 
-Register a static layout for use in KaleidoManager.
+#### `register_layout(layout_id, layout, name, description, keywords, static, allow_multiple, parameter_options)`
+
+Register a static or callable layout for use in KaleidoManager.
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `layout_id` | `str` | **required** | Unique identifier for the layout |
+| `layout` | `Component` or `Callable` | **required** | The Dash component tree or a function that returns one |
+| `name` | `str` | `layout_id` | Display name for the layout |
+| `description` | `str` | `''` | Description shown in layout selector |
+| `keywords` | `List[str]` | `[]` | Keywords for searching/filtering layouts |
+| `static` | `bool` | `True` | Whether layout is pre-built (vs callable) |
+| `allow_multiple` | `bool` | `False` | Allow multiple tabs with this layout |
+| `parameter_options` | `dict` | `None` | Pre-defined parameter configurations |
 
 ```python
 dash_kaleido.register_layout(
     layout_id='about',
+    layout=html.Div([html.H1('About')]),
     name='About',
     description='About page',
-    keywords=['about', 'info'],
-    layout=html.Div([html.H1('About')])
+    keywords=['about', 'info']
 )
 ```
 
+---
+
 #### `@register_layout_callback(...)`
 
-Decorator to register a callable/lazy layout.
+Decorator to register a callable/lazy layout. The decorated function is called when the tab is activated.
 
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `layout_id` | `str` | **required** | Unique identifier for the layout |
+| `name` | `str` | `layout_id` | Display name for the layout |
+| `description` | `str` | `None` | Description shown in layout selector |
+| `keywords` | `List[str]` | `None` | Keywords for searching/filtering |
+| `allow_multiple` | `bool` | `False` | Allow multiple tabs with this layout |
+| `parameter_options` | `dict` | `None` | Pre-defined parameter configurations (see below) |
+
+**`parameter_options` Format:**
+```python
+{
+    'option_key': ('Description text', {'param1': value, 'param2': value}),
+    ...
+}
+```
+
+**Example:**
 ```python
 @dash_kaleido.register_layout_callback(
     layout_id='dashboard',
@@ -454,23 +501,39 @@ Decorator to register a callable/lazy layout.
     description='Main dashboard',
     keywords=['main'],
     allow_multiple=False,
-    parameter_options=None
+    parameter_options={
+        'small': ('Small grid (5x5)', {'rows': 5, 'cols': 5}),
+        'large': ('Large grid (10x10)', {'rows': 10, 'cols': 10}),
+    }
 )
-def dashboard_layout():
-    return html.Div([html.H1('Dashboard')])
+def dashboard_layout(rows=5, cols=5):
+    return html.Div([html.H1(f'Grid: {rows}x{cols}')])
 ```
 
-**Parameters:**
-- `layout_id` (str): Unique identifier
-- `name` (str, optional): Display name
-- `description` (str, optional): Description text
-- `keywords` (list, optional): Search keywords
-- `allow_multiple` (bool): Allow multiple tabs with this layout
-- `parameter_options` (dict, optional): Pre-defined parameter configurations
+---
 
 #### `render_layout_for_tab(active_tab_data)`
 
-Helper to render the correct layout for a tab (for custom callbacks).
+Helper to render the correct layout for a tab. Use this if you want to write your own callback instead of using `init()`.
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `active_tab_data` | `dict` | The `activeTabData` from KaleidoManager |
+
+**`active_tab_data` Structure:**
+```python
+{
+    'id': str,           # Unique tab UUID
+    'layoutId': str,     # The layout ID to render
+    'name': str,         # Tab display name
+    'createdAt': int,    # Unix timestamp
+    'layoutParams': dict # Parameter values (optional)
+}
+```
+
+**Returns:** `Component` or `None`
 
 ```python
 from dash import callback, Input, Output
@@ -484,30 +547,115 @@ def render_content(tab_data):
     return dash_kaleido.render_layout_for_tab(tab_data)
 ```
 
+---
+
 #### `get_registered_layouts_metadata()`
 
-Get metadata for all registered layouts.
+Get metadata for all registered layouts. Useful for debugging or building custom layout selectors.
 
-**Returns:** Dictionary of layout metadata
+**Returns:** `dict` - Dictionary mapping layout_id to metadata
 
-### Classes
+```python
+metadata = dash_kaleido.get_registered_layouts_metadata()
+# {
+#     'home': {'id': 'home', 'name': 'Home', 'description': '...', ...},
+#     'dashboard': {'id': 'dashboard', 'name': 'Dashboard', ...}
+# }
+```
+
+---
+
+#### `walk_layout(layout, transform_fn)`
+
+Recursively walk a Dash layout tree and apply a transform function to each component.
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `layout` | `Component`, `list`, `dict`, or primitive | The layout to walk |
+| `transform_fn` | `Callable[[Component], Component]` | Function to apply to each component |
+
+**Returns:** The transformed layout with the same structure as input.
+
+```python
+from dash import html
+from dash_kaleido import walk_layout
+
+def add_class(component):
+    if hasattr(component, 'className'):
+        component.className = (component.className or '') + ' my-class'
+    return component
+
+layout = html.Div([html.H1('Title'), html.P('Content')])
+transformed = walk_layout(layout, add_class)
+```
+
+---
+
+#### `inject_tab_id(layout, tab_id)`
+
+Inject `tab_id` into all component IDs in a layout. This enables pattern-matching callbacks for layouts with `allow_multiple=True`.
+
+**ID Transformation Rules:**
+- String ID `"my-id"` → `{"type": "my-id", "index": tab_id}`
+- Dict ID without `"index"` → Add `"index": tab_id`
+- Dict ID with `"index"` already set → No change (respects user's pattern-matching)
+- No ID → No change
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `layout` | `Component` or `List[Component]` | The layout(s) to transform |
+| `tab_id` | `str` | The unique tab identifier |
+
+**Returns:** The transformed layout with injected IDs.
+
+```python
+from dash import html, dcc
+from dash_kaleido import inject_tab_id
+
+layout = html.Div([
+    html.H1("Title", id="title"),
+    dcc.Input(id="my-input", value="")
+], id="container")
+
+transformed = inject_tab_id(layout, "tab-abc-123")
+# IDs are now: {"type": "container", "index": "tab-abc-123"}, etc.
+```
+
+---
+
+### Components
 
 #### `KaleidoManager`
 
-The main React component for tab management.
+The main React component for tab management. See [KaleidoManager Properties](#kaleidomanager-properties) for all available props.
 
 #### `KaleidoTab`
 
-Wrapper component for tab content (internal use, created by `init()`).
+Wrapper component for tab content. Created internally by `init()` - you typically don't need to use this directly.
+
+#### `DashKaleido`
+
+Low-level wrapper component (internal use).
+
+---
+
+### Classes
 
 #### `LayoutRegistry`
 
-Global registry for layouts.
+Global registry for layouts. Access via the module-level functions above, or use directly for advanced use cases.
 
-**Methods:**
+**Class Methods:**
 - `register(layout_id, layout, ...)`: Register a layout
-- `unregister(layout_id)`: Remove a layout
-- `get_layout(layout_id)`: Get a specific layout
+- `unregister(layout_id)`: Remove a registered layout
+- `get_layout(layout_id)`: Get a specific layout definition
+- `get_all_layouts()`: Get all registered layouts
+- `get_layouts_metadata()`: Get metadata for all layouts (called by `init()`)
+- `clear()`: Clear all registered layouts
 
 ## Size Variants
 
@@ -532,22 +680,47 @@ The component supports three size variants via CSS classes:
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+3. Run checks: `just check`
+4. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+5. Push to the branch (`git push origin feature/AmazingFeature`)
+6. Open a Pull Request
 
 ## Development
+
+We use [Just](https://github.com/casey/just) as a command runner:
+
+```bash
+# Install dependencies
+just install
+
+# Build everything (JS + Python components)
+just build
+
+# Run TypeScript type checking
+just typecheck
+
+# Format code
+just format
+
+# Run example
+just demo
+
+# Watch mode for development
+just watch
+```
+
+Or without Just:
 
 ```bash
 # Install dependencies
 npm install
 pip install -r requirements.txt
 
-# Build JavaScript
+# Build
 npm run build
 
 # Run example
@@ -556,7 +729,7 @@ python usage.py
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details
+Apache License 2.0 - see [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 

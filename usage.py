@@ -85,11 +85,6 @@ dash_kaleido.register_layout(
                     options=[
                         {'label': 'Light', 'value': 'light'},
                         {'label': 'Dark', 'value': 'dark'},
-                        {'label': 'Arctic', 'value': 'arctic'},
-                        {'label': 'Ocean', 'value': 'ocean'},
-                        {'label': 'Forest', 'value': 'forest'},
-                        {'label': 'Desert', 'value': 'desert'},
-                        {'label': 'High Contrast', 'value': 'highcontrast'}
                     ],
                     value='light',
                     persistence=True,
