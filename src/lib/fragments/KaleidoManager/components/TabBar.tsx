@@ -28,6 +28,7 @@ export interface TabBarProps {
   tabs: Tab[];
   activeTabId: string | null;
   registeredLayouts: Record<string, LayoutMetadata>;
+  loadingTabs?: Set<string>;
   canCloseTabs?: boolean;
   showContextMenu?: boolean;
   tabBarRef?: React.RefObject<HTMLDivElement>;
@@ -73,6 +74,7 @@ const TabBar: React.FC<TabBarProps> = ({
   tabs,
   activeTabId,
   registeredLayouts,
+  loadingTabs = new Set(),
   canCloseTabs = true,
   showContextMenu = true,
   tabBarRef,
@@ -178,7 +180,7 @@ const TabBar: React.FC<TabBarProps> = ({
         >
           {sortedTabs.map((tab) => {
             const isLocked = tab.locked === true;
-            const isLoading = tab.loading === true;
+            const isLoading = loadingTabs.has(tab.id);
             const isEditing = editingTabId === tab.id;
 
             return (

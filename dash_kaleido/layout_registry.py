@@ -6,8 +6,8 @@ that can be used in KaleidoTabManager.
 """
 
 import inspect
-from typing import Dict, List, Optional, Union, Callable, Any
-from dash.development.base_component import Component
+from typing import Dict, List, Optional, Union, Callable, Any, Mapping
+from dash.development.base_component import Component, ComponentType
 
 
 def get_function_parameters(func: Callable) -> List[Dict[str, Any]]:
@@ -69,7 +69,7 @@ class LayoutRegistry:
     def register(
         cls,
         layout_id: str,
-        layout: Union[Component, List[Component], Callable[[], Component]],
+        layout: Union[ComponentType, Callable[..., ComponentType]],
         name: Optional[str] = None,
         description: Optional[str] = None,
         keywords: Optional[List[str]] = None,
@@ -84,7 +84,7 @@ class LayoutRegistry:
         ----------
         layout_id : str
             Unique identifier for the layout
-        layout : Component, List[Component], or Callable
+        layout : ComponentType or Callable[..., ComponentType]
             The layout to register. Can be a Dash component, list of components,
             or a callable that returns a component.
         name : str, optional
@@ -216,7 +216,7 @@ class LayoutRegistry:
         cls._layouts.clear()
     
     @classmethod
-    def resolve_layout(cls, layout_id: str) -> Optional[Component]:
+    def resolve_layout(cls, layout_id: str) -> Optional[ComponentType]:
         """
         Resolve a layout to an actual Dash component.
         
@@ -240,14 +240,14 @@ class LayoutRegistry:
         
         # If it's a callable, call it to get the component
         if callable(layout):
-            return layout()
+            return layout()  # type: ignore
         
         return layout
 
 
 def register_layout(
     layout_id: str,
-    layout: Union[Component, List[Component], Callable[[], Component]],
+    layout: Union[ComponentType, Callable[..., ComponentType]],
     name: Optional[str] = None,
     description: Optional[str] = None,
     keywords: Optional[List[str]] = None,
