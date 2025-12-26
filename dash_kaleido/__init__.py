@@ -78,16 +78,147 @@ __all__ = list(_components) + [
 ]
 
 
-def init(app, kaleido_id: str):
+# def init(app, kaleido_id: str):
+#     """
+#     Initialize Kaleido callbacks. Must be called after app.layout is set.
+    
+#     This function automatically:
+#     - Populates the KaleidoManager's registeredLayouts with metadata from the registry
+#     - Creates a callback to render layout content based on activeTabData
+#     - Static layouts are returned immediately (already in memory)
+#     - Lazy/callable layouts are evaluated on-demand
+#     - For allow_multiple=True layouts, component IDs are transformed to pattern-matching format
+    
+#     Parameters
+#     ----------
+#     app : dash.Dash
+#         The Dash application instance
+#     kaleido_id : str
+#         The ID of the KaleidoManager component
+    
+#     Examples
+#     --------
+#     >>> app.layout = html.Div([
+#     ...     dash_kaleido.KaleidoManager(id='kaleido', ...)
+#     ... ])
+#     >>> dash_kaleido.init(app, 'kaleido')
+#     """
+#     from dash import Input, Output, html
+#     from .layout_registry import LayoutRegistry
+#     from .layout_utils import inject_tab_id
+    
+#     # Import components locally to avoid circular imports
+#     from .KaleidoTab import KaleidoTab
+    
+#     # Traverse the app.layout to find and update the KaleidoManager component
+#     def update_component(component):
+#         if hasattr(component, 'id') and component.id == kaleido_id:
+#             # Inject the registered layouts metadata
+#             component.registeredLayouts = get_registered_layouts_metadata()
+#             return True
+#         if hasattr(component, 'children'):
+#             children = component.children
+#             if isinstance(children, list):
+#                 for child in children:
+#                     if update_component(child):
+#                         return True
+#             elif children:
+#                 return update_component(children)
+#         return False
+    
+#     if app.layout:
+#         update_component(app.layout)
+    
+#     # Create the rendering callback using tabsData for all tabs with layouts
+#     # This returns KaleidoTab components for each tab, enabling client-side tab switching
+#     @app.callback(
+#         Output(kaleido_id, 'children'),
+#         Input(kaleido_id, 'tabsData'),
+#         prevent_initial_call=True
+#     )
+#     def _kaleido_render_all_tabs(tabs_data):
+#         """Render layout content for all tabs that have a layout selected.
+        
+#         Returns a list of KaleidoTab components, one per tab with a layout.
+#         The KaleidoManager handles visibility toggling on the client side.
+#         """
+#         if not tabs_data:
+#             return []
+        
+#         tab_components = []
+        
+#         for tab_info in tabs_data:
+#             tab_id = tab_info.get('id')
+#             layout_id = tab_info.get('layoutId')
+#             layout_params = tab_info.get('layoutParams') or {}
+            
+#             if not tab_id or not layout_id:
+#                 # Skip tabs without a layout selected
+#                 continue
+            
+#             layout_info = LayoutRegistry.get_layout(layout_id)
+#             if not layout_info:  # Layout not found
+#                 tab_components.append(
+#                     KaleidoTab(
+#                         id={'type': 'kaleido-tab-content', 'index': tab_id},
+#                         children=html.Div([
+#                             html.H3('Layout not found'),
+#                             html.P(f"Layout '{layout_id}' is not registered.")
+#                         ])
+#                     )
+#                 )
+#             else:  # Layout found
+#                 layout = layout_info['layout']
+                
+#                 # Call if it's a callable (lazy layout)
+#                 if callable(layout):
+#                     # Check if the layout accepts parameters
+#                     params = layout_info.get('parameters', [])
+#                     if params and layout_params:
+#                         # Build kwargs from layoutParams, using defaults where needed
+#                         kwargs = {}
+#                         for param_info in params:
+#                             param_name = param_info['name']
+#                             if param_name in layout_params and layout_params[param_name]:
+#                                 kwargs[param_name] = layout_params[param_name]
+#                             elif param_info['has_default']:
+#                                 kwargs[param_name] = param_info['default']
+#                             # If required and not provided, pass empty string
+#                             else:
+#                                 kwargs[param_name] = ''
+#                         layout = layout(**kwargs)
+#                     else:
+#                         layout = layout()
+                
+#                 # If allowMultiple, inject tab IDs into component IDs
+#                 if layout_info.get('allow_multiple', False):
+#                     layout = inject_tab_id(layout, tab_id)
+                
+#                 # Wrap in KaleidoTab with pattern-matching ID
+#                 # Include layoutId in the index to force React to re-render when layout changes
+#                 tab_components.append(
+#                     KaleidoTab(
+#                         id={'type': 'kaleido-tab-content', 'index': f"{tab_id}:{layout_id}"},
+#                         children=layout
+#                     )
+#                 )
+        
+#         return tab_components
+
+
+def init(app: _dash.Dash, kaleido_id: str, background: bool = True):
     """
     Initialize Kaleido callbacks. Must be called after app.layout is set.
     
     This function automatically:
     - Populates the KaleidoManager's registeredLayouts with metadata from the registry
-    - Creates a callback to render layout content based on activeTabData
+    - Creates a callback to render layout content based on tabsData
     - Static layouts are returned immediately (already in memory)
     - Lazy/callable layouts are evaluated on-demand
     - For allow_multiple=True layouts, component IDs are transformed to pattern-matching format
+    - Supports async execution if app was created with use_async=True (Dash 3.x)
+    - Runs in background if background=True and any layout requires it. 
+      Note that this requires the Dash app to have a `background_callback_manager` provided to `dash.Dash(...)`.
     
     Parameters
     ----------
@@ -98,12 +229,13 @@ def init(app, kaleido_id: str):
     
     Examples
     --------
+    >>> app = Dash(__name__, use_async=True)  # Dash 3.x async support
     >>> app.layout = html.Div([
     ...     dash_kaleido.KaleidoManager(id='kaleido', ...)
     ... ])
     >>> dash_kaleido.init(app, 'kaleido')
     """
-    from dash import Input, Output, html
+    from dash import Input, Output, State, html
     from .layout_registry import LayoutRegistry
     from .layout_utils import inject_tab_id
     
@@ -129,82 +261,144 @@ def init(app, kaleido_id: str):
     if app.layout:
         update_component(app.layout)
     
-    # Create the rendering callback using tabsData for all tabs with layouts
-    # This returns KaleidoTab components for each tab, enabling client-side tab switching
-    @app.callback(
-        Output(kaleido_id, 'children'),
-        Input(kaleido_id, 'tabsData'),
-        prevent_initial_call=True
-    )
-    def _kaleido_render_all_tabs(tabs_data):
-        """Render layout content for all tabs that have a layout selected.
+    # Detect async and background support
+    use_async = getattr(app, 'use_async', False)
+    
+    # Core rendering function - shared between sync and async
+    def render_single_tab(tab_info):
+        """Render a single tab's layout content."""
+        tab_id = tab_info.get('id')
+        layout_id = tab_info.get('layoutId')
+        layout_params = tab_info.get('layoutParams') or {}
         
-        Returns a list of KaleidoTab components, one per tab with a layout.
-        The KaleidoManager handles visibility toggling on the client side.
-        """
-        if not tabs_data:
-            return []
+        if not tab_id or not layout_id:
+            return None
         
-        tab_components = []
-        
-        for tab_info in tabs_data:
-            tab_id = tab_info.get('id')
-            layout_id = tab_info.get('layoutId')
-            layout_params = tab_info.get('layoutParams') or {}
-            
-            if not tab_id or not layout_id:
-                continue
-            
-            # Resolve the layout (static or lazy)
-            layout_info = LayoutRegistry.get_layout(layout_id)
-            if not layout_info:
-                tab_components.append(
-                    KaleidoTab(
-                        id={'type': 'kaleido-tab-content', 'index': tab_id},
-                        children=html.Div([
-                            html.H3('Layout not found'),
-                            html.P(f"Layout '{layout_id}' is not registered.")
-                        ])
-                    )
-                )
-                continue
-            
-            layout = layout_info['layout']
-            
-            # Call if it's a callable (lazy layout)
-            if callable(layout):
-                # Check if the layout accepts parameters
-                params = layout_info.get('parameters', [])
-                if params and layout_params:
-                    # Build kwargs from layoutParams, using defaults where needed
-                    kwargs = {}
-                    for param_info in params:
-                        param_name = param_info['name']
-                        if param_name in layout_params and layout_params[param_name]:
-                            kwargs[param_name] = layout_params[param_name]
-                        elif param_info['has_default']:
-                            kwargs[param_name] = param_info['default']
-                        # If required and not provided, pass empty string
-                        else:
-                            kwargs[param_name] = ''
-                    layout = layout(**kwargs)
-                else:
-                    layout = layout()
-            
-            # If allowMultiple, inject tab IDs into component IDs
-            if layout_info.get('allow_multiple', False):
-                layout = inject_tab_id(layout, tab_id)
-            
-            # Wrap in KaleidoTab with pattern-matching ID
-            # Include layoutId in the index to force React to re-render when layout changes
-            tab_components.append(
-                KaleidoTab(
-                    id={'type': 'kaleido-tab-content', 'index': f"{tab_id}:{layout_id}"},
-                    children=layout
-                )
+        layout_info = LayoutRegistry.get_layout(layout_id)
+        if not layout_info:
+            return KaleidoTab(
+                id={'type': 'kaleido-tab-content', 'index': tab_id},
+                children=html.Div([
+                    html.H3('Layout not found'),
+                    html.P(f"Layout '{layout_id}' is not registered.")
+                ])
             )
         
-        return tab_components
+        layout = layout_info['layout']
+        
+        # Call if it's a callable (lazy layout)
+        if callable(layout):
+            params = layout_info.get('parameters', [])
+            if params and layout_params:
+                kwargs = {}
+                for param_info in params:
+                    param_name = param_info['name']
+                    if param_name in layout_params and layout_params[param_name]:
+                        kwargs[param_name] = layout_params[param_name]
+                    elif param_info['has_default']:
+                        kwargs[param_name] = param_info['default']
+                    else:
+                        kwargs[param_name] = ''
+                layout = layout(**kwargs)
+            else:
+                layout = layout()
+        
+        # If allowMultiple, inject tab IDs into component IDs
+        if layout_info.get('allow_multiple', False):
+            layout = inject_tab_id(layout, tab_id)
+        
+        # Wrap in KaleidoTab with pattern-matching ID
+        return KaleidoTab(
+            id={'type': 'kaleido-tab-content', 'index': f"{tab_id}:{layout_id}"},
+            children=layout
+        )
+    
+    # Build callback kwargs based on capabilities
+    callback_kwargs = {
+        'prevent_initial_call': True
+    }
+    if background:
+        callback_kwargs['background'] = True
+    
+    # Create async or sync callback
+    if use_async:
+        @app.callback(
+            Output(kaleido_id, 'children'),
+            Input(kaleido_id, 'tabsData'),
+            State(kaleido_id, 'children'),
+            **callback_kwargs
+        )
+        async def _kaleido_render_all_tabs(tabs_data, current_children):
+            """Render layouts (async version with caching)."""
+            if not tabs_data:
+                return []
+            
+            # Build dict of existing tabs for reuse
+            existing_tabs = {}
+            if current_children:
+                for child in current_children:
+                    if hasattr(child, 'id') and isinstance(child.id, dict):
+                        existing_tabs[child.id.get('index')] = child
+            
+            tab_components = []
+            for tab_info in tabs_data:
+                tab_id = tab_info.get('id')
+                layout_id = tab_info.get('layoutId')
+                
+                if not tab_id or not layout_id:
+                    continue
+                
+                # Check if this tab+layout combo already exists
+                tab_key = f"{tab_id}:{layout_id}"
+                if tab_key in existing_tabs:
+                    # Reuse existing rendered tab
+                    tab_components.append(existing_tabs[tab_key])
+                else:
+                    # Render new tab (call sync function - rendering is inherently sync)
+                    result = render_single_tab(tab_info)
+                    if result:
+                        tab_components.append(result)
+            
+            return tab_components
+    else:
+        @app.callback(
+            Output(kaleido_id, 'children'),
+            Input(kaleido_id, 'tabsData'),
+            State(kaleido_id, 'children'),
+            **callback_kwargs
+        )
+        def _kaleido_render_all_tabs(tabs_data, current_children):
+            """Render layouts (sync version with caching)."""
+            if not tabs_data:
+                return []
+            
+            # Build dict of existing tabs for reuse
+            existing_tabs = {}
+            if current_children:
+                for child in current_children:
+                    if hasattr(child, 'id') and isinstance(child.id, dict):
+                        existing_tabs[child.id.get('index')] = child
+            
+            tab_components = []
+            for tab_info in tabs_data:
+                tab_id = tab_info.get('id')
+                layout_id = tab_info.get('layoutId')
+                
+                if not tab_id or not layout_id:
+                    continue
+                
+                # Check if this tab+layout combo already exists
+                tab_key = f"{tab_id}:{layout_id}"
+                if tab_key in existing_tabs:
+                    # Reuse existing rendered tab
+                    tab_components.append(existing_tabs[tab_key])
+                else:
+                    # Render new tab
+                    result = render_single_tab(tab_info)
+                    if result:
+                        tab_components.append(result)
+            
+            return tab_components
 
 
 def render_layout_for_tab(active_tab_data: dict):
@@ -280,6 +474,6 @@ def render_layout_for_tab(active_tab_data: dict):
     
     # If allowMultiple, inject tab IDs into component IDs
     if layout_info.get('allow_multiple', False):
-        layout = inject_tab_id(layout, tab_id)
+        layout = inject_tab_id(layout, tab_id)  # type: ignore
     
     return layout

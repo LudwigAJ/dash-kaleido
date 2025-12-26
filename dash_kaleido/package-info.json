@@ -1,6 +1,6 @@
 {
   "name": "dash_kaleido",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Kaleido offers powerful tab management for dash applications",
   "main": "index.ts",
   "repository": {

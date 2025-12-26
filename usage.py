@@ -6,13 +6,23 @@ This example demonstrates impressive layouts using Plotly Express datasets:
 - Lazy/callback layouts (on-demand): Data visualizations with real datasets
 """
 
-from dash import Dash, html, dcc, callback, Input, Output, State
+from dash import Dash, html, dcc, callback, Input, Output, State, DiskcacheManager
+from diskcache import Cache
+from uuid import uuid4
+
 import dash_kaleido
 import plotly.express as px
 import plotly.graph_objects as go
 
+# create disk cache
+cache = Cache(directory='.tmp/')
+
+# create callback manager
+callbackManager = DiskcacheManager(cache, cache_by=lambda: uuid4().hex)
+
+
 # Create the Dash app
-app = Dash(__name__, suppress_callback_exceptions=True)
+app = Dash(__name__, suppress_callback_exceptions=True, background_callback_manager=callbackManager)
 
 # =============================================================================
 # STATIC LAYOUTS (delivered immediately, no callback needed)
